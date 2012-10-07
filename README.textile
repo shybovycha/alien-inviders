@@ -1,6 +1,22 @@
-h1. alien-inviders 0.2
+h1. alien-inviders 0.3
 
 h2. Brief overview
 
-This was the second version of my game. The first one is lost.
-This one contains some quest, game saving, AI and inventory features.
+This was the third version of my game. This one contains 
+the same functionality as the previous one, but replaces
+the AI logic, spheres with the spaceship models, adds some
+menus and sounds.
+
+h2. Controls
+
+**space** - shoot
+**Ctrl** - speed up
+**Shift** - slow down
+**Enter** - interaction: pick up the item; enter the planet menu, etc.
+**Q** - quests window
+**Tab** - your current stats
+
+h2. Notes
+
+For some reason, no *exit* action was preserved. So, you need to minimize the 
+game and close it using Windows.
