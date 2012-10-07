@@ -1,22 +1,21 @@
-h1. alien-inviders 0.3
+h1. alien-inviders
 
-h2. Brief overview
+h2. Foreword
 
-This was the third version of my game. This one contains 
-the same functionality as the previous one, but replaces
-the AI logic, spheres with the spaceship models, adds some
-menus and sounds.
+This was my first game i ever created using my programming skills.
+This is a space simulator. There is still no idea or story for the 
+game yet as the first version was created when i was just a kid.
+So, do not be very strict while observing these games, please.
 
-h2. Controls
+h2. Developer notes
 
-**space** - shoot
-**Ctrl** - speed up
-**Shift** - slow down
-**Enter** - interaction: pick up the item; enter the planet menu, etc.
-**Q** - quests window
-**Tab** - your current stats
+Each version of the game is contained in its own branch.
+Some versions (written on *DarkBasic*) are not syncronizing with the 
+FPS so they look horrible. Others (written on *BlitzBasic*) do
+have the syncing so they look a bit more pretty.
 
-h2. Notes
+Now i am thinking on the new version of that old stuff. So, you
+may be faced a new branch soon - it may be a great challenge for the ones
+in the repository right now. Who knows, maybe it shall become a **1.0** version
+of the game ;) 
 
-For some reason, no *exit* action was preserved. So, you need to minimize the 
-game and close it using Windows.
