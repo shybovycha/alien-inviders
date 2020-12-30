@@ -1,0 +1,797 @@
+Rem *** Include File: Included3.dba ***
+Rem Created: 21.01.2007 11:35:43
+
+Rem Included in Project: D:\darkbasic\Projects\Alien Invaders 1\Alien Invaders 1.dbpro
+Rem Game core functions
+
+function NewGame(Ship#)
+  Model#=Ship#
+    if Ship#=1
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Blue Cruiser.x", 1
+      load image "Objects\tx15.dds", 1
+      load image "Objects\tx16.dds", 2
+      texture limb 1, 3, 2
+      texture object 1, 1
+      Ship.Shield#=25
+    endif
+
+    if Ship#=2
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Blue Fighter.x", 1
+      load image "Objects\tx01c.dds", 1
+      load image "Objects\tx02c.dds", 2
+      texture object 1, 2
+      texture limb 1, 4, 1
+      Height#=60
+      Ship.Weapon#=50
+    endif
+
+    if Ship#=3
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Blue Raider.x", 1
+      load image "Objects\tx08.dds", 1
+      load image "Objects\tx09.dds", 2
+      texture object 1, 2
+      texture limb 1, 2, 1
+      Ship.Engine#=40
+    endif
+
+    if Ship#=4
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Light Cruiser.x", 1
+      load image "Objects\tx15a.dds", 1
+      load image "Objects\tx16a.dds", 2
+      texture limb 1, 4, 1
+      texture object 1, 2
+      Ship.Shield#=25
+      Ship.Baloon#=25
+    endif
+
+    if Ship#=5
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Light Fighter.x", 1
+      load image "Objects\tx01b.dds", 1
+      load image "Objects\tx02b.dds", 2
+      texture limb 1, 4, 1
+      texture object 1, 2
+      Ship.Baloon#=25
+      Ship.Shield#=25
+    endif
+
+    if Ship#=6
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Pink Raider.x", 1
+      load image "Objects\tx08c.dds", 1
+      load image "Objects\tx09c.dds", 2
+      texture object 1, 2
+      texture limb 1, 2, 1
+      Ship.Engine#=25
+      Ship.Baloon#=25
+    endif
+
+    if Ship#=7
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Red Cruiser.x", 1
+      load image "Objects\tx15c.dds", 1
+      load image "Objects\tx16c.dds", 2
+      texture limb 1, 3, 2
+      texture object 1, 1
+      Ship.Shield#=25
+      Ship.Scaner#=25
+    endif
+
+    if Ship#=8
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Red Fighter.x", 1
+      load image "Objects\tx01.dds", 1
+      load image "Objects\tx02.dds", 2
+      texture limb 1, 4, 1
+      texture object 1, 2
+      Ship.Weapon#=25
+      Ship.Scaner#=25
+    endif
+
+    if Ship#=9
+      if object exist(1)=1 then delete object 1
+      if image exist(1)=1 then delete image 1
+      load object "Objects\Red Raider.x", 1
+      load image "Objects\tx08a.dds", 1
+      load image "Objects\tx09a.dds", 2
+      texture object 1, 2
+      texture limb 1, 2, 1
+      Ship.Engine#=25
+      Ship.Weapon#=25
+    endif
+
+  Rem Ally
+  load object "Objects\Pink Raider.x", 2
+  load image "Objects\tx08c.dds", 1072
+  load image "Objects\tx09c.dds", 1073
+  texture object 2, 1073
+  texture limb 2, 2, 1072
+  hide object 2
+
+  Rem Trader
+  load object "Objects\Light Cruiser.x", 3
+  load image "Objects\tx15a.dds", 3
+  texture object 3, 3
+  hide object 3
+
+  Rem Earth
+  make object sphere 4, 4080
+  load image "Images\earthmap.jpg", 4
+  texture object 4, 4
+  position object 4, 5000, 0, 500
+
+  Rem Sky
+  load object "Objects\am.x", 5
+  load image "Images\space.tga", 5
+  texture object 5, 5
+  scale object 5, 40, 40, 40
+
+  Rem Boss
+  load object "Objects\Tri Ship.x", 6
+  load image "Objects\commands2.dds", 6
+  texture object 6, 6
+  scale object 6, 7000, 7000, 7000
+  hide object 6
+
+  Rem Enemies
+  load object "Objects\Alien Saucer.x", 7
+  load image "Objects\tx06.dds", 7
+  texture object 7, 7
+  position object 7, -5000, 0, 0
+
+  load object "Objects\Green Recon.x", 8
+  load image "Objects\fighter1.dds", 8
+  texture object 8, 8
+  position object 8, -2500, 0, 2500
+
+  load object "Objects\Gray Saucer.x", 9
+  load image "Objects\tx06a.dds", 9
+  texture object 9, 9
+  position object 9, 2500, 0, 2500
+
+  load object "Objects\Gray Recon.x", 10
+  load image "Objects\fighter2.dds", 10
+  texture object 10, 10
+  position object 10, 5000, 0, 0
+
+  load object "Objects\Gray Stealth.x", 11
+  load image "Objects\wraith2.dds", 11
+  texture object 11, 11
+  position object 11, 2500, 0, -2500
+
+  Rem Enemy HP Indicator
+  make object cylinder 12, 15
+  load image "Objects\HP.bmp", 12
+  texture object 12, 12
+
+  hide object 12
+
+  clone object 13, 12
+  clone object 14, 12
+  clone object 15, 12
+  clone object 16, 12
+  clone object 17, 12
+  clone object 18, 12
+
+  hide object 13
+  hide object 14
+  hide object 15
+  hide object 16
+  hide object 17
+  hide object 18
+
+  Rem Bonuses
+    Rem Ammo
+  load object "Objects\Bonus.x", 19
+  load image "Objects\pu.dds", 19
+  texture object 19, 19
+  hide object 19
+
+    Rem Armor
+  clone object 44, 19
+  load image "Objects\pu2.dds", 44
+  texture object 44, 44
+  hide object 44
+
+    Rem HP
+  clone object 69, 19
+  load image "Objects\pu3.dds", 69
+  texture object 69, 69
+  hide object 69
+
+    Rem Gas
+  load object "Objects\Gas.x", 94
+  load image "Objects\objects2.dds", 94
+  texture object 94, 94
+  hide object 94
+
+  Rem New AI
+  load object "Objects\Light Fighter.x", 121
+  load image "Objects\tx01b.dds", 121
+  load image "Objects\tx02b.dds", 122
+  texture limb 121, 4, 121
+  texture object 121, 122
+  position object 121, 500, 0, 500
+
+  Rem Loading Sounds
+  load sound "Sound\Appear1.wav", 1
+  load sound "Sound\Appear2.wav", 2
+  load sound "Sound\Appear3.wav", 3
+  load sound "Sound\Die.wav", 4
+  load sound "Sound\enemy.wav", 5
+  load sound "Sound\Engine.wav", 6
+  set sound volume 6, 80
+  load sound "Sound\Impact.wav", 7
+  load sound "Sound\Shoot.wav", 8
+  load sound "Sound\Shoot2.wav", 9
+  load sound "Sound\Shoot3.wav", 10
+  load sound "Sound\Teleport1.wav", 11
+  stop music 8
+
+`  PasteBonuses()
+
+  if Ld#=0 then Main() : else position object 1, val(x1$), val(y1$), val(z1$) : rotate object 1, val(ax1$), val(ay1$), val(az1$)
+
+endfunction
+
+function LoadGame()
+  Rem Loading Images
+  load image "Images\MainMnu.bmp", 1064
+  load image "Images\Acception.bmp", 1065
+  load image "Images\Selector.bmp", 1066
+  load image "Images\Planet.jpg", 1070
+  load image "Images\NewGameMnu.jpg", 1071
+  load image "Images\NewSelector.bmp", 1074
+  load image "Images\Message.bmp", 1075
+  load image "Images\OptionsMnu.jpg", 1076
+  load image "Images\Task.bmp", 1082
+  load image "Images\Panel.jpg", 1090
+  load image "Images\Console.bmp", 1091
+  load image "Images\Shop.bmp", 1092
+  load image "Images\ShopCursor.bmp", 1093
+
+  Rem Loading Musics
+  load music "Music\basicloop.mp3", 1
+  load music "Music\gameover.mp3", 2
+  load music "Music\levelcomplete.mp3", 4
+  load music "Music\title.mp3", 8
+  load music "Music\victory.mp3", 9
+
+  sprite 1, 0, 0, 1074
+  sprite 2, 0, 0, 1090
+  hide sprite 1
+`  hide sprite 2
+endfunction
+
+function Trade()
+  Selector=1
+  do
+    cls
+
+    paste image 1070, 0, 0
+    set text font "Times new roman", 204
+    set text size 20
+    set text to bold
+    text 200, 200, "ТОРГІВЕЛЬНИЙ КОРАБЕЛЬ"
+    set text size 16
+    text 240, 230, "Ремонт"
+    text 240, 260, "Заправка"
+    text 240, 290, "Зліт"
+
+    if Selector=1 then text 200, 230, ">>>" : else
+    if Selector=2 then text 200, 260, ">>>" : else
+    if Selector=3 then text 200, 290, ">>>"
+
+    if upkey()=1
+      if Selector=1 then Selector=3 : else
+      if Selector=2 then Selector=1 : else
+      if Selector=3 then Selector=2
+    endif
+
+    if downkey()=1
+      if Selector=1 then Selector=2 : else
+      if Selector=2 then Selector=3 : else
+      if Selector=3 then Selector=1
+    endif
+
+    if returnkey()=1
+      if Selector=1 then HP#=100 : dec Money#, 100 : else
+      if Selector=2 then Gas#=5000 : dec Money#, 250 : else
+      if Selector=3 then exit
+    endif
+
+    sleep 100
+    sync
+  loop
+  hide object 3
+endfunction
+
+function Main()
+  do
+    show sprite 2
+    sprite 2, 0, 0, 1090
+
+    x1=object position x(1)
+    y1=object position y(1)
+    z1=object position z(1)
+    a=object angle y(1)
+    set camera to follow 0, x1, y1, z1, a, 40, 60, 15, 0
+    point camera 0, x1, y1, z1
+    position object 5, x1, y1, z1
+
+    if leftkey()=1 then roll object right 1, tr-3
+    if rightkey()=1 then roll object right 1, tr+3
+    if upkey()=1 then pitch object up 1, rr-3
+    if downkey()=1 then pitch object up 1, rr+3
+    if escapekey()=1 then Started#=0 : MainMenu()
+    if spacekey()=1 then Shoot()
+    if scancode()=20 then Trade()
+    if scancode()=19 then position object 1, object position x(4)-3800, 0, object position z(4)-3800
+    if controlkey()=1
+      if Speed#>=Ship.Engine# then Speed#=Ship.Engine# : else
+        inc Speed#
+    endif
+    if shiftkey()=1
+      if Speed#<0 then Speed#=0 : else
+        dec Speed#
+    endif
+    if scancode()=41 then Console()
+    move object 1, Speed#
+
+    if object visible(6)=1 and object hit(1, 6)=1 then dec HP# : dec Armor#
+    if object visible(6)=1 then Missn#=2
+    if Speed#>0 then play sound 6
+
+    MoveAI()
+    MovePlanet(4, 8000, 10)
+    OnPlanet()
+    MoveAlly()
+  `  Compass()
+    DrawInfo(HP#)
+    GiveTask()
+    MoveNewAI()
+    CheckAI()
+    Collision()
+
+    if HP#<100 then inc HP#, Ship.Dron#
+    if Battery#<100 then inc Battery#, Ship.Dron#
+
+    position object 5, object position x(1), object position y(1), object position z(1)
+    sync
+    loop music 1
+    
+    deltaTime = 100 ` / max(1, screen fps())
+    
+    sleep deltaTime
+  loop
+endfunction
+
+function MovePlanet(Number#, Radius#, Speed#)
+  if object exist(Number#)=0 then exitfunction
+  yrotate object Number#, wrapvalue(object angle y(Number#)+(Speed#/100))
+  position object Number#, (Cos(object angle y(Number#))*Radius#)+200, 0, (Sin(object angle y(Number#))*Radius#)+200
+  sleep 1
+endfunction
+
+function Compass()
+  x1=object position x(1)
+  y1=object position y(1)
+  z1=object position z(1)
+
+  for i=7 to 11
+    if object visible(i)=1
+      x2=object position x(i)
+      y2=object position y(i)
+      z2=object position z(i)
+
+      if Distance(x1, y1, z1, x2, y2, z2)<=(Ship.Scaner#*1000)
+        dot 999+(sqrt(sqr(x2/400))), sqrt(sqr(y2/400)), rgb(255, 0, 0)
+      endif
+    endif
+  next i
+endfunction
+
+function EarthMenu()
+  Selector=1
+  do
+    hide sprite 2
+    cls
+
+    paste image 1070, 0, 0
+    set text font "Times new roman", 204
+    set text size 20
+    set text to bold
+    text 200, 200, "Земля"
+    set text size 16
+    text 240, 230, "Найняти корабель"
+    text 240, 260, "Ремонт і заправка"
+    text 240, 290, "Магазин"
+    text 240, 320, "Зліт"
+
+    if Selector=1 then text 200, 230, ">>>" : else
+    if Selector=2 then text 200, 260, ">>>" : else
+    if Selector=3 then text 200, 290, ">>>" : else
+    if Selector=4 then text 200, 320, ">>>"
+
+    if upkey()=1
+      if Selector=1 then Selector=4 : else
+      if Selector=2 then Selector=1 : else
+      if Selector=3 then Selector=2 : else
+      if Selector=4 then Selector=3
+    endif
+
+    if downkey()=1
+      if Selector=1 then Selector=2 : else
+      if Selector=2 then Selector=3 : else
+      if Selector=3 then Selector=4 : else
+      if Selector=4 then Selector=1
+    endif
+
+    if returnkey()=1
+      if Selector=1
+        if Message("Найняти корабель за 10000 лаве?", "Так", "Ні")=0 then Ally#=1 : show object 2 : dec Money#, 10000 : else Ally#=1 : show object 2 : dec Money#, 10000
+      endif
+      if Selector=2 then Gas#=5000 : HP#=100 : Armor#=100 : else
+      if Selector=3 then Shop() : else
+      if Selector=4 then show sprite 2 : exit
+    endif
+
+    if AtFirst#=1
+      cls 0
+      paste image 1082, 0, 0
+      text 50, 70, Task$(2)
+      Missn#=2
+      sync
+
+      do
+        if returnkey()=1 then show sprite 2 : exitfunction
+        show object 6
+        position object 6, 0, 0, 0
+        point object 6, 15000, 0, 15000
+        AtFirst#=0
+      loop
+    endif
+
+    sleep 100
+
+    sync
+`    show sprite 2
+  loop
+
+  cls
+  sync
+  sleep 150
+endfunction
+
+function Shoot()
+  if Battery#>0
+    inc Accuracy#, 0.0001*int(Accuracy#)
+    x1=object position x(1)
+    y1=object position y(1)
+    z1=object position z(1)
+
+    for i=1 to 5
+      x2=object position x(i+6)
+      y2=object position y(i+6)
+      z2=object position z(i+6)
+      a(i)=Distance(x1, y1, z1, x2, y2, z2)
+    next i
+
+    minV=1
+    for i=2 to 5
+      if a(i)<a(minV) then
+        if object visible(i+6)=1 then minV=i
+    next i
+
+    if object visible(6)=1 then minV=0
+
+    ran=rnd(2)-1
+    if ran=1 then ran=-1
+    x2=object position x(minV+6)
+    y2=object position y(minV+6)+(int(Accuracy#)*ran*50)
+    z2=object position z(minV+6)
+    d3d_line3d(x1, y1, z1, x2, y2, z2, rgb(255, 0, 0), rgb(255, 0, 0), 1)
+    if minV>0 then Enemy(minV)=Enemy(minV)-2 : else dec BossHP#, 4
+
+    dec Battery#, 1.2
+  endif
+endfunction
+
+function Collision()
+  if object hit(1, 0)>117
+    move object 1, -5
+    dec HP#, 0.2
+  endif
+
+remstart
+  if object hit(1, 0)>=17 and object hit(1, 0)<=43
+    k=object hit(1, 0)
+    delete object k
+    Ammo#=100
+  endif
+
+  if object hit(1, 0)>=45 and object hit(1, 0)<=68
+    delete object object hit(1, 0)
+    Armor#=100
+  endif
+
+  if object hit(1, 0)>=70 and object hit(1, 0)<=93
+    delete object object hit(1, 0)
+    HP#=100
+  endif
+
+  if object hit(1, 0)>=95 and object hit(1, 0)<=117
+    delete object object hit(1, 0)
+    Gas#=100
+  endif
+remend
+
+  if object visible(6)=1 and object hit(1, 6)=1 then DecHP2() : move object 1, -20
+  if object visible(6)=1 and object hit(6, 2)=1 then move object 2, -5
+  if object hit(1, 4)=1 then HP#=-100 : Armor#=-100
+  if object hit(2, 4)=1 then move object 2, -60
+endfunction
+
+function Death()
+  if Message("Вас вбили. Завантажити гру?", "Так", "Ні")=0 then Load(1) : else
+    end
+endfunction Dead
+
+function OnPlanet()
+  x1=object position x(1)
+  y1=object position z(1)
+  x2=object position x(4)
+  y2=object position z(4)
+  if x1>=x2-5000 and x1<=x2+5000 and y1>=y2-5000 and y1<=y2+5000 and returnkey()=1 then EarthMenu()
+endfunction
+
+function DrawInfo(HP)
+  box 0, 0, HP*2, 10, rgb(255, 0, 0), rgb(255, 0, 0), rgb(255, 0, 0), rgb(255, 0, 0)
+  if HP<=0 then Death()
+
+  box 0, screen height()-15, Armor#*2, screen height(), rgb(0, 0, 255), rgb(0, 0, 255), rgb(0, 0, 255), rgb(0, 0, 255)
+
+  box screen width()-(Battery#*2), 0, screen width(), 15, rgb(128, 128, 0), rgb(128, 128, 0), rgb(128, 128, 0), rgb(128, 128, 0)
+
+  if object visible(7)=0 and object visible(8)=0 and object visible(9)=0 and object visible(10)=0 and object visible(11)=0 and Missn#=1 then WinMsg(1)
+  if Missn#=2 and object visible(6)=0 then WinMsg(2)
+endfunction
+
+function GiveTask()
+  x1=object position x(1)
+  y1=object position y(1)
+  z1=object position z(1)
+  x2=object position x(121)
+  y2=object position y(121)
+  z2=object position z(121)
+
+  if Distance(x1, y1, z1, x2, y2, z2)<=550 and Gived#=0
+    hide sprite 2
+    cls 0
+    paste image 1082, 0, 0
+    text 50, 70, Task$(1)
+    sync
+
+    do
+      if returnkey()=1 then show sprite 2 : exit
+      Gived#=1
+      Missn#=1
+    loop
+
+  endif
+endfunction
+
+function PasteBonuses()
+  for i=18 to 43
+    if object exist(i)=0 then clone object i, 17
+    position object i, rnd(4000)*5, 0, rnd(4000)*5
+  next i
+
+  for i=45 to 68
+    if object exist(i)=0 then clone object i, 44
+    position object i, rnd(4000)*5, 0, rnd(4000)*5
+  next i
+
+  for i=70 to 93
+    if object exist(i)=0 then clone object i, 69
+    position object i, rnd(4000)*5, 0, rnd(4000)*5
+  next i
+
+  for i=95 to 117
+    if object exist(i)=0 then clone object i, 94
+    position object i, rnd(4000)*5, 0, rnd(4000)*5
+  next i
+endfunction
+
+function DecHP2()
+  if Armor#>0 then dec Armor#, 0.5 : else
+    dec HP#, 0.5
+endfunction
+
+function WinMsg(Mission#)
+  hide sprite 2
+
+  if music playing(1)=1 then stop music 1
+  if music playing(2)=1 then stop music 2
+  if music playing(8)=1 then stop music 8
+
+  cls
+  paste image 1082, 0, 0
+  set text size 20
+  set text to bold
+  if object visible(7)=0 and object visible(8)=0 and object visible(9)=0 and object visible(10)=0 and object visible(11)=0 and Mission#=1 then text 50, 70, "Ми перемогли Колод! Ось ваша нагорода!" : Armor#=100 : Missn#=0 : play music 3 : else
+  if Mission#=2 and object visible(6)=0 then text 50, 70, "Браво!!! Сподіваємось, ця нагорода буде достойною вас!" : Armor#=1000 : HP#=1000 : Missn#=0 : play music 9
+  set text to normal
+  set text size 14
+
+  sync
+
+  do
+    Missn#=0
+    if returnkey()=1 then show sprite 2 : exitfunction
+
+    sleep 100
+  loop
+endfunction
+
+function Shop()
+  sprite 1093, 20, 139, 1093
+  show sprite 1093
+  paste image 1092, 0, 0
+  XSel=1
+  YSel=1
+  do
+
+    paste image 1092, 0, 0
+
+    if RightKey()=1 then inc XSel
+    if LeftKey()=1 then dec XSel
+    if UpKey()=1 then dec YSel
+    if DownKey()=1 then inc YSel
+    if EscapeKey()=1 then exit
+
+    if XSel<1 then XSel=4
+    if XSel>4 then XSel=1
+
+    if YSel<1 then YSel=4
+    if YSel>4 then YSel=1
+
+    if YSel=1
+      if XSel=1 then sprite 1093, 20, 139, 1093
+      if XSel=2 then sprite 1093, 119, 139, 1093
+      if XSel=3 then sprite 1093, 218, 139, 1093
+      if XSel=4 then sprite 1093, 317, 139, 1093
+    endif
+
+    if YSel=2
+      if XSel=1 then sprite 1093, 20, 234, 1093
+      if XSel=2 then sprite 1093, 119, 234, 1093
+      if XSel=3 then sprite 1093, 218, 234, 1093
+      if XSel=4 then sprite 1093, 317, 234, 1093
+    endif
+
+    if YSel=3
+      if XSel=1 then sprite 1093, 20, 329, 1093
+      if XSel=2 then sprite 1093, 119, 329, 1093
+      if XSel=3 then sprite 1093, 218, 329, 1093
+      if XSel=4 then sprite 1093, 317, 329, 1093
+    endif
+
+    if YSel=4
+      if XSel=1 then sprite 1093, 20, 424, 1093
+      if XSel=2 then sprite 1093, 119, 424, 1093
+      if XSel=3 then sprite 1093, 218, 424, 1093
+      if XSel=4 then sprite 1093, 317, 424, 1093
+    endif
+
+    Rem Titles
+    set text size 20
+    set text to bold
+
+    if XSel=1
+      if YSel=1 then text 605, 110, "Нейтронний двигун"
+      if YSel=2 then text 605, 110, "Ракетний двигун"
+      if YSel=3 then text 605, 110, "Гравітонний двигун"
+      if YSel=4 then text 605, 110, "Антиполярний двигун"
+    endif
+
+    if XSel=2
+      if YSel=1 then text 605, 110, "Швидкостріл"
+      if YSel=2 then text 605, 110, "Лазерна башта"
+      if YSel=3 then text 605, 110, "Плазмовий лазер"
+      if YSel=4 then text 605, 110, "Багатогенераторний підсилювач"
+    endif
+
+    if XSel=3
+      if YSel=1 then text 605, 110, "4-рівневий генератор"
+      if YSel=2 then text 605, 110, "Ртутний морфметал"
+      if YSel=3 then text 605, 110, "Парасольковий генератор"
+      if YSel=4 then text 605, 110, "8-рівневий генератор"
+    endif
+
+    if XSel=4
+      if YSel=1 then text 605, 110, "Корейський дрон"
+      if YSel=2 then text 605, 110, "Термінальний дрон"
+      if YSel=3 then text 605, 110, "'Севільський цирюльник'"
+      if YSel=4 then text 605, 110, "3-процесний дрон"
+    endif
+
+    Rem Descriptions
+    set text size 16
+    set text to normal
+
+    if XSel=1
+      if YSel=1 then text 605, 170, "Працює на нейтронних частинках (+20 кпх.)"
+      if YSel=2 then text 605, 170, "Модернізована модель 2000р. Надійний (+10 кпх.)"
+      if YSel=3 then text 605, 170, "Дуже швидко нагрівається (+15 кпх.)"
+      if YSel=4 then text 605, 170, "Найпотужніший (+30 кпх.)"
+    endif
+
+    if XSel=2
+      if YSel=1 then text 605, 170, "Швидкострільний (+5%)"
+      if YSel=2 then text 605, 170, "Подвійної дії (+10%)"
+      if YSel=3 then text 605, 170, "Гірничодобувний лазер. Знищує алмаз! (+20%)"
+      if YSel=4 then text 605, 170, "В корпусі від ракет - контрабанда (+25%)"
+    endif
+
+    if XSel=3
+      if YSel=1 then text 605, 170, "Вдвічі потужніший (2х)"
+      if YSel=2 then text 605, 170, "Цей щит змінює форму (+25%)"
+      if YSel=3 then text 605, 170, "Ремонтyється (3х)"
+      if YSel=4 then text 605, 170, "Надпотужний (8х)!"
+    endif
+
+    if XSel=4
+      if YSel=1 then text 605, 170, "Досить 'розумний' (+25%)"
+      if YSel=2 then text 605, 170, "На основі терміналу (+45%)"
+      if YSel=3 then text 605, 170, "Експлуатувався в перукарні (+10%)"
+      if YSel=4 then text 605, 170, "Не зовсім найкращий (+30%)"
+    endif
+
+    Rem Buy
+    if YSel=1
+      if XSel=1 then inc Ship.Engine#, 2
+      if XSel=2 then inc Ship.Engine#, 1
+      if XSel=3 then inc Ship.Engine#, 1.5
+      if XSel=4 then inc Ship.Engine#, 3
+    endif
+
+    if YSel=2
+      if XSel=1 then inc Ship.Weapon#, 5
+      if XSel=2 then inc Ship.Weapon#, 10
+      if XSel=3 then inc Ship.Weapon#, 20
+      if XSel=4 then inc Ship.Weapon#, 25
+    endif
+
+    if YSel=3
+      if XSel=1 then Ship.Shield#=Ship.Shield#*2
+      if XSel=2 then inc Ship.Shield#, 25
+      if XSel=3 then Ship.Shield#=Ship.Shield#*3
+      if XSel=4 then Ship.Shield#=Ship.Shield#*8
+    endif
+
+    if YSel=4
+      if XSel=1 then inc Ship.Dron#, 0.25
+      if XSel=2 then inc Ship.Dron#, 0.45
+      if XSel=3 then inc Ship.Dron#, 0.1
+      if XSel=4 then inc Ship.Dron#, 0.3
+    endif
+
+    sleep 150
+    sync
+
+  loop
+  hide sprite 1093
+endfunction

@@ -1,0 +1,13 @@
+Rem Project: Alien Invaders 1
+Rem Created: 21.01.2007 11:34:57
+
+Rem ***** Main Source File *****
+if check display mode(1024, 768, 32)=1 then set display mode 1024, 768, 32
+disable escapekey
+hide mouse
+sync on
+color backdrop 0
+set camera range 0, 1, 6000
+
+LoadGame()
+MainMenu()

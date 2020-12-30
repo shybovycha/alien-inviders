@@ -1,0 +1,151 @@
+; **** Dark BASIC Professional Project File ****
+; **** Written by Synergy Editor ****
+version=DBP1.00
+project name=Alien Invaders 1-2
+
+; **** source file information ****
+main=Alien Invaders.dba
+LineMain=120
+include1=Included1.dba
+LineInclude1=142
+include2=Included2.dba
+LineInclude2=6
+include3=Included3.dba
+LineInclude3=249
+
+; **** Executable Information  ***
+; build types: exe, media, installer, alone
+executable=Alien Invaders.exe
+build type=media
+; ** Media file compression **
+compression=NO
+
+; ** Media file encryption **
+encryption=NO
+; ** Display the card options screen window? **
+card options window=NO
+
+; **** debugger information ****
+; If the editor sets this to yes, it is running in debug mode
+CLI=NO
+CommandLineArguments=
+
+; **** display mode information ****
+app title=Alien Invaders
+
+; graphics mode options: fullscreen, window, desktop, fulldesktop, hidden
+graphics mode=window
+fullscreen resolution=640x480x16
+
+; arbitrary sizes are valid for windowed mode
+window resolution=1024x768
+
+; **** External Files Information ****
+
+; **** Media ****
+; Example entries: media1=graphics\*.jpg
+media root path=C:\Users\shybo\Documents\Visual Studio 2019\Projects\AlienInvaders\0.4\
+media1=Thumbs\Console.bmp
+media2=Thumbs\EARTH.TGA
+media3=Thumbs\earthmap.bmp
+media4=Thumbs\JUPITER2.JPG
+media5=Thumbs\LoadMnu.bmp
+media6=Thumbs\mars.jpg
+media7=Thumbs\Message2.jpg
+media8=Thumbs\MOON.JPG
+media9=Thumbs\SALMNSKN.TGA
+media10=Thumbs\SaveMnu.bmp
+media11=Thumbs\STARFLD1.TGA
+media12=Thumbs\stars8.tif
+media13=Thumbs\Stars10.JPG
+media14=Images\Acception.bmp
+media15=Images\Console.bmp
+media16=Images\EarthMap.jpg
+media17=Images\Loading.bmp
+media18=Images\MainMnu.bmp
+media19=Images\Message.bmp
+media20=Images\NewGameMnu.jpg
+media21=Images\NewSelector.bmp
+media22=Images\OptionsMnu.bmp
+media23=Images\OptionsMnu.JPG
+media24=Images\Panel.jpg
+media25=Images\Planet.jpg
+media26=Images\Selector.bmp
+media27=Images\Shop.bmp
+media28=Music\basicloop.mp3
+media29=Music\gameover.mp3
+media30=Music\levelcomplete.mp3
+media31=Music\title.mp3
+media32=Music\victory.mp3
+media33=Objects\Alien Saucer.x
+media34=Objects\am.x
+media35=Objects\Blue Cruiser.x
+media36=Objects\Blue Fighter.x
+media37=Objects\Blue Raider.x
+media38=Objects\Bonus.x
+media39=Objects\commands2.dds
+media40=Objects\EARTH.TGA
+media41=Objects\fighter1.dds
+media42=Objects\fighter2.dds
+media43=Objects\Gas.x
+media44=Objects\Gray Recon.x
+media45=Objects\Gray Saucer.x
+media46=Objects\Gray Stealth.x
+media47=Sound\Appear1.wav
+media48=Sound\Appear2.wav
+media49=Sound\Appear3.wav
+media50=Sound\Die.wav
+media51=Sound\enemy.wav
+media52=Sound\Engine.wav
+media53=Sound\Impact.wav
+media54=Sound\Shoot.wav
+media55=Sound\Shoot2.wav
+media56=Sound\Shoot3.wav
+media57=Sound\Teleport1.wav
+media58=Images\ShopCursor.bmp
+media59=Objects\HP.bmp
+media60=Objects\Light Cruiser.x
+media61=Objects\Light Fighter.x
+media62=Objects\objects2.dds
+media63=Objects\Pink Raider.x
+media64=Objects\pu.dds
+media65=Objects\pu2.dds
+media66=Objects\pu3.dds
+media67=Objects\Red Cruiser.x
+media68=Objects\Red Fighter.x
+media69=Objects\Red Raider.x
+media70=Objects\Red Stealth.x
+media71=Objects\Scorpion Ship.x
+media72=Objects\sky.jpg
+media73=Objects\Tri Ship.x
+
+; **** Icons ****
+
+; **** Cursors ****
+
+; **** Version Info ****
+VerComments=
+VerCompany=Enjoy;) Inc.
+VerFileDesc=Alien Invaders Game
+VerFileNumber=v1.2
+VerInternal=v1.2
+VerCopyright=All rights reserved
+VerTrademark=
+VerFilename=
+VerProduct=
+VerProductNumber=v1.0
+
+; **** To Do ****
+ToDo1=0SaveLoadMenu()
+ToDo2=1Save
+ToDo3=0Load
+
+; **** Comments ****
+comments1=Enjoy;) Inc. production
+comments2=
+
+; **** Advanced (setup.ini) configuration ****
+RemoveSafetyCode=NO
+SafeArrays=YES
+LocalTempFolder=NO
+ExternaliseDLLS=NO

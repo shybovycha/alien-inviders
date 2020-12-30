@@ -1,0 +1,444 @@
+Rem *** Include File: Included1.dba ***
+Rem Created: 21.01.2007 11:35:30
+
+Rem Included in Project: D:\darkbasic\Projects\Alien Invaders 1\Alien Invaders 1.dbpro
+Rem Shell functions such as Messages, Menus, etc.
+
+function Load(File#)
+  cls 0
+  sync
+  paste image 1077, 0, 0
+  sync
+
+  Ld#=1
+  s$="Save"+str$(File#)+".AIS"
+  if file exist(s$)=1
+
+    open to read 1, s$
+
+    read string 1, model$
+
+    read string 1, x1$
+    read string 1, y1$
+    read string 1, z1$
+
+    read string 1, ax1$
+    read string 1, ay1$
+    read string 1, az1$
+
+`    read string 1, Missn$
+    read string 1, Armor$
+    read string 1, Ammo$
+    read string 1, Money$
+    read string 1, Gas$
+    read string 1, Ally$
+    read string 1, HP$
+    read string 1, Speed$
+
+    read string 1, Engine$
+    read string 1, Baloon$
+    read string 1, Scaner$
+    read string 1, Shield$
+    read string 1, Weapon$
+    read string 1, Dron$
+
+    close file 1
+
+`    Missn#=val(Missn$)
+    Armor#=val(Armor$)
+    Ammo#=val(Ammo$)
+    Money#=val(Money$)
+    Gas#=val(Gas$)
+    Ally#=val(Ally$)
+    HP#=val(HP$)
+    Speed#=val(Speed$)
+
+    Ship.Engine#=val(Engine$)
+    Ship.Baloon#=val(Baloon$)
+    Ship.Scaner#=val(Scaner$)
+    Ship.Shield#=val(Shield$)
+    Ship.Weapon#=val(Weapon$)
+    Ship.Dron#=val(Dron$)
+
+    if object exist(1)=0 then NewGame(val(model$)) : else position object 1, val(x1$), val(y1$), val(z1$) : rotate object 1, val(ax1$), val(ay1$), val(az1$)
+  endif
+
+  Main()
+endfunction
+
+function Save(File#)
+  s$="Save"+str$(File#)+".AIS"
+  if file exist(s$)=1 then delete file s$
+  open to write 1, s$
+
+  Rem Player
+  write string 1, str$(Model#)
+  write string 1, str$(int(object position x(1)))
+  write string 1, str$(int(object position y(1)))
+  write string 1, str$(int(object position z(1)))
+  write string 1, str$(int(object angle x(1)))
+  write string 1, str$(int(object angle y(1)))
+  write string 1, str$(int(object angle z(1)))
+
+`  write string 1, str$(Missn#)
+  write string 1, str$(Armor#)
+  write string 1, str$(Ammo#)
+  write string 1, str$(Money#)
+  write string 1, str$(Gas#)
+  write string 1, Str$(Ally#)
+  write string 1, str$(HP#)
+  write string 1, str$(Speed#)
+
+  Rem Player ship
+  write string 1, str$(Ship.Engine#)
+  write string 1, str$(Ship.Baloon#)
+  write string 1, str$(Ship.Scaner#)
+  write string 1, str$(Ship.Shield#)
+  write string 1, str$(Ship.Weapon#)
+  write string 1, str$(Ship.Dron#)
+
+  close file 1
+endfunction
+
+function Message(Text$, Btn1$, Btn2$)
+  sleep 200
+  set text size 20
+  Selector=1
+
+  do
+    cls
+    sleep 150
+    paste image 1075, 200, 100
+
+    if rightkey()=1 then inc Selector
+    if leftkey()=1 then dec Selector
+
+    if Selector=1 then paste image 1065, 205, 277 : else
+    if Selector=2 then paste image 1065, 460, 277
+
+    if Selector<1 then Selector=2 : else
+    if Selector>2 then Selector=1
+
+    if returnkey()=1
+      if Selector=1 then Res=0 : else
+      if Selector=2 then Res=1
+      exit
+    endif
+
+    text 210, 110, Text$
+    set text to bold
+    text 210, 276, Btn1$
+    text 465, 276, Btn2$
+    set text to normal
+    sync
+  loop
+  set text size 12
+  sleep 150
+endfunction Res
+
+function MainMenu()
+  Selector=1
+  hide sprite 2
+  if music playing(1)=1 then stop music 1
+  if music playing(8)=1 then stop music 8
+`  if music playing(2)=1 then stop music 2
+`  if music playing(3)=1 then stop music 3
+`  if music playing(9)=1 then stop music 9
+
+  do
+    cls
+
+    paste image 1064, 0, 0
+
+    if downkey()=1
+      if Selector<5 then inc Selector : else
+      if Selector=5 then Selector=1
+      sleep 100
+    endif
+
+    if upkey()=1
+      if Selector>1 then dec Selector : else
+      if Selector=1 then Selector=5
+      sleep 100
+    endif
+
+    if Selector=1 then paste image 1066, 200, 192 : else
+    if Selector=2 then paste image 1066, 200, 212 : else
+    if Selector=3 then paste image 1066, 200, 232 : else
+    if Selector=4 then paste image 1066, 200, 252 : else
+    if Selector=5 then paste image 1066, 200, 272
+
+    if returnkey()=1
+      if Selector=1
+        if music playing(1)=1 then stop music 1
+        if Started#=0
+          exit
+        else
+          NewGame(SelectShip())
+        endif
+      endif
+ `     if Selector=2 then OptionsMenu() : else
+      if Selector=3 then Save(1) : exit : else
+      if Selector=4 then Load(1) : exit : else
+      if Selector=5 then
+        if Message("Вийти?", "Так", "Ні")=0 then End
+    endif
+
+    set text font "chicago", 204
+    set text to normal
+    set text size 18
+
+    if Started#=1 then text 200, 190, "Нова гра" : else
+    if Started#=0 then text 200, 190, "Продовжити гру"
+
+    text 200, 210, "Опції"
+    text 200, 230, "Зберегти"
+    text 200, 250, "Завантажити"
+    text 200, 270, "Вийти"
+    play music 8
+
+    sync
+  loop
+  sleep 150
+  Started#=0
+endfunction
+
+function OptionsMenu()
+  Selector=1
+  do
+    cls
+    sleep 100
+
+    paste image 1076, 0, 0
+
+    if downkey()=1
+      if Selector<4 then inc Selector : else
+      if Selector=4 then Selector=1
+      sleep 100
+    endif
+
+    if upkey()=1
+      if Selector>1 then dec Selector : else
+      if Selector=1 then Selector=4
+      sleep 100
+    endif
+
+    if Selector=1 then paste image 1066, 200, 192 : else
+    if Selector=2 then paste image 1066, 200, 212 : else
+    if Selector=3 then paste image 1066, 200, 232 : else
+    if Selector=4 then paste image 1066, 200, 252
+
+    if returnkey()=1
+      if Selector=4 then exit
+      remstart
+      if Selector=2 then OptionsMenu() : else
+      if Selector=3 then gosub Save : exit : else
+      if Selector=4 then gosub Load : exit
+      remend
+    endif
+
+    set text font "chicago", 204
+    set text to normal
+    set text size 18
+
+    text 200, 190, "Музика:"
+    text 200, 210, "Звуки:"
+    text 200, 230, "Розподіл:"
+    text 200, 250, "Повернутись"
+
+    sync
+  loop
+  sleep 150
+endfunction
+
+function SavesList(m)
+  Remstart
+    m=1 - save game
+    m=2 - load game
+  Remend
+
+  sleep 100
+  Selector=1
+  do
+    cls
+
+    if m=1 then paste image 1080, 0, 0 : else
+      paste image 1081, 0, 0
+
+    if downkey()=1
+      if Selector<SavesNum# then inc Selector : else
+      if Selector=SavesNum# then Selector=1
+      sleep 100
+    endif
+
+    if upkey()=1
+      if Selector>1 then dec Selector : else
+      if Selector=1 then Selector=SavesNum#
+      sleep 100
+    endif
+
+    if Selector=1 then paste image 12345, 200, 192 : else
+    if Selector=2 then paste image 12345, 200, 212 : else
+    if Selector=3 then paste image 12345, 200, 232 : else
+    if Selector=4 then paste image 12345, 200, 252 : else
+    if Selector=5 then paste image 12345, 200, 272
+
+    if returnkey()=1
+      if Selector=1 then n=1 : exit : else
+      if Selector=2 then n=2 : exit : else
+      if Selector=3 then n=3 : exit : else
+      if Selector=4 then n=4 : exit : else
+      if Selector=5 then n=5 : exit
+    endif
+
+    if escapekey()=1 then exitfunction
+
+
+    set text size 18
+    set text to bold
+`    if m=1 then text 0, 0, "ЗБЕРЕГТИ ГРУ" : else
+`    if m=2 then text 0, 0, "ЗАВАНТАЖИТИ ГРУ"
+    set text to normal
+    set text size 16
+
+    for i=1 to 10
+      if file exist("Save"+str$(i)+".AIS")=1 then text 200, 170+(i*20), "Збережена гра №"+str$(int(i)) : else
+        exit
+    next i
+
+    text 200, 600, "Натисніть Esc, щоб продовжити гру... "
+
+    sync
+  loop
+endfunction n
+
+function SelectShip()
+  Ship#=1
+  XSelector=1
+  YSelector=1
+  do
+    sleep 120
+    cls
+    paste image 1071, 0, 0
+    show sprite 1
+
+    if rightkey()=1 then inc XSelector
+    if leftkey()=1 then dec XSelector
+    if upkey()=1 then dec YSelector
+    if downkey()=1 then inc YSelector
+    if escapekey()=1 then exit
+
+    if XSelector>3 then XSelector=1
+    if YSelector<1 then YSelector=3
+    if XSelector<1 then XSelector=3
+    if YSelector>3 then YSelector=1
+
+    if YSelector=1
+      if XSelector=1
+        text 725, 135, "Корабель <<Блакитний граніт>>"
+        text 640, 155, "Використовувався у торгівлі."
+        text 640, 175, "Має потужні щити."
+        sprite 1, 68, 224, 1074
+      endif
+
+      if XSelector=2
+        text 725, 135, "Корабель <<Бультер'єр>>"
+        text 640, 155, "Розроблений у військ. цілях."
+        text 640, 175, "Обладнано новою зброєю."
+        sprite 1, 160, 224, 1074
+      endif
+
+      if XSelector=3
+        text 725, 135, "Корабель <<Торнадо>>"
+        text 640, 155, "Використовувався для швидкої доставки товару."
+        text 640, 175, "Має потужний двигун."
+        sprite 1, 252, 224, 1074
+      endif
+    endif
+
+    if YSelector=2
+      if XSelector=1
+        text 725, 135, "Корабель <<Янтар>>"
+        text 640, 155, "Використовувався для перевезення хімікатів."
+        text 640, 175, "Має новітні щити."
+        sprite 1, 68, 313, 1074
+      endif
+
+      if XSelector=2
+        text 715, 135, "Корабель <<Дев'ятий вал>>"
+        text 640, 155, "Створений для планетарних бомбардувань."
+        text 640, 175, "Обладнано потужною зброєю."
+        sprite 1, 160, 313, 1074
+      endif
+
+      if XSelector=3
+        text 725, 135, "Корабель <<Буревій>>"
+        text 640, 155, "Використовувався для евакуації."
+        text 640, 175, "Має новітній двигун."
+        sprite 1, 252, 313, 1074
+      endif
+    endif
+
+    if YSelector=3
+      if XSelector=1
+        text 725, 135, "Корабель <<Вулкан>>"
+        text 640, 155, "Використовувався для перевезення бомб."
+        text 640, 175, "Має надпотужні щити."
+        sprite 1, 68, 403, 1074
+      endif
+
+      if XSelector=2
+        text 725, 135, "Корабель <<Піщана буря>>"
+        text 640, 155, "Розроблений у 2147р. для винищення баз ворога."
+        text 640, 175, "Обладнано найпотужнішою на той час зброєю."
+        sprite 1, 160, 403, 1074
+      endif
+
+      if XSelector=3
+        text 725, 135, "Корабель <<Комета>>"
+        text 640, 155, "Назва не відповідає йому-він не лишає слідів."
+        text 640, 175, "Має надпотужний вакуумний двигун."
+        sprite 1, 252, 403, 1074
+      endif
+    endif
+
+    if returnkey()=1
+      if YSelector=1
+        if XSelector=1 then Ship#=1
+        if XSelector=2 then Ship#=2
+        if XSelector=3 then Ship#=3
+      endif
+
+      if YSelector=2
+        if XSelector=1 then Ship#=4
+        if XSelector=2 then Ship#=5
+        if XSelector=3 then Ship#=6
+      endif
+
+      if YSelector=3
+        if XSelector=1 then Ship#=7
+        if XSelector=2 then Ship#=8
+        if XSelector=3 then Ship#=9
+      endif
+      exit
+    endif
+    sync
+  loop
+  hide sprite 1
+  paste image 1077, 0, 0
+  sync
+endfunction Ship#
+
+function SaveLoadMenu(Action#)
+  if Action#=1
+    Save(SavesList(1))
+  endif
+
+  if Action#=2
+    Load(SavesList(2))
+  endif
+endfunction
+
+function Console()
+  Cheats#=1
+endfunction

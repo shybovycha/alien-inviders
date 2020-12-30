@@ -1,0 +1,117 @@
+Rem Project: Alien Invaders 1
+Rem Created: 21.01.2007 11:34:57
+
+Rem ***** Main Source File *****
+
+set display mode 1024, 768, 32
+d3d_init
+disable escapekey
+sync on
+autocam off
+color backdrop 0
+hide mouse
+
+sync
+cls 0
+load image "Images\Loading.bmp", 1077
+paste image 1077, 0, 0
+sync
+sleep 10
+sync
+
+  Rem Globals
+  global HP#
+  global Shell#
+  global Money#
+  global Ammo#
+  global Armor#
+  global Gas#
+  global Ally#
+  global Speed#
+  global Height#
+
+  HP#=100
+  Money#=1000
+  Ammo#=10000
+  Armor#=0
+  Gas#=5000
+  Ally#=0
+  Speed#=3
+  Height#=90
+
+  dim Shell(5)
+    Shell(1)=0
+    Shell(2)=0
+    Shell(3)=0
+    Shell(4)=0
+    Shell(5)=0
+
+  dim a(6)
+
+  dim Task$(25)
+    Task$(1)="Допоможіть у бою з Колодами!"
+    Task$(2)="Колоди захопили Землю! Знищіть їхню головну базу!"
+    Task$(3)="Наздоженіть та знищіть ГоловуКолод!"
+
+  dim Enemy(5)
+  for i=1 to 5
+    Enemy(i)=100
+  next i
+
+  global Battery#
+  Battery#=100
+
+global Started#
+Started#=1
+
+global Ld#
+Ld#=0
+
+global Gived#
+Gived#=0
+
+global Model#
+global AtFirst#
+AtFirst#=1
+
+global tr
+global tl
+global rr
+global tl
+global Accuracy#
+
+tr=0
+tl=0
+rl=0
+rr=0
+Accuracy#=1
+
+global acc
+
+Rem Player's Ship
+type TShip
+  Engine#
+  Baloon#
+  Shield#
+  Scaner#
+  Weapon#
+endtype
+global Ship as TShip
+Ship.Engine#=10
+Ship.Baloon#=10
+Ship.Shield#=10
+Ship.Scaner#=10
+Ship.Weapon#=10
+Armor#=50
+
+global Cheats#
+Cheats#=0
+
+global BossHP#
+BossHP#=1000
+
+global Missn#
+Missn#=0
+
+LoadGame()
+MainMenu()

@@ -1,0 +1,348 @@
+Rem *** Include File: Included2.dba ***
+Rem Created: 21.01.2007 11:35:38
+
+Rem Included in Project: D:\darkbasic\Projects\Alien Invaders 1\Alien Invaders 1.dbpro
+Rem Automatic intellect of my Game
+
+function MoveAI
+  x1=object position x(1)
+  y1=object position y(1)
+  z1=object position z(1)
+
+  Rem Enemy#1
+  x2=object position x(7)
+  y2=object position y(7)
+  z2=object position z(7)
+
+  if Distance(x1, y1, z1, x2, y2, z2)<=630
+    _Shoot(1)
+  else
+    point object 7, x1, y1, z1
+    move object 7, 5
+  endif
+  if Distance(x1, y1, z1, x2, y2, z2)<=620
+    point object 7, x1, y1, z1
+    move object 7, -7
+  endif
+
+  Rem Enemy#2
+  x2=object position x(8)
+  y2=object position y(8)
+  z2=object position z(8)
+
+  if Distance(x1, y1, z1, x2, y2, z2)<=230
+    _Shoot(2)
+  else
+    point object 8, x1, y1, z1
+    move object 8, 5
+  endif
+  if Distance(x1, y1, z1, x2, y2, z2)<=220
+    point object 8, x1, y1, z1
+    move object 8, -7
+  endif
+
+  Rem Enemy#3
+  x2=object position x(9)
+  y2=object position y(9)
+  z2=object position z(9)
+
+  if Distance(x1, y1, z1, x2, y2, z2)<=330
+    _Shoot(3)
+  else
+    point object 9, x1, y1, z1
+    move object 9, 5
+  endif
+  if Distance(x1, y1, z1, x2, y2, z2)<=320
+    point object 9, x1, y1, z1
+    move object 9, -7
+  endif
+
+  Rem Enemy#4
+  x2=object position x(10)
+  y2=object position y(10)
+  z2=object position z(10)
+
+  if Distance(x1, y1, z1, x2, y2, z2)<=430
+    _Shoot(4)
+  else
+    point object 10, x1, y1, z1
+    move object 10, 5
+  endif
+  if Distance(x1, y1, z1, x2, y2, z2)<=420
+    point object 10, x1, y1, z1
+    move object 10, -7
+  endif
+
+  Rem Enemy#5
+  x2=object position x(11)
+  y2=object position y(11)
+  z2=object position z(11)
+
+  if Distance(x1, y1, z1, x2, y2, z2)<=530
+    _Shoot(5)
+  else
+    point object 11, x1, y1, z1
+    move object 11, 5
+  endif
+  if Distance(x1, y1, z1, x2, y2, z2)<=520
+    point object 11, x1, y1, z1
+    move object 11, -7
+  endif
+
+  if object visible(6)=1
+    move object 6, 0.2
+    if object visible(2)=1 then d3d_line3d object position x(6), object position y(6), object position z(6), object position x(2), object position y(2), object position z(2), rgb(255, 255, 0), rgb(255, 0, 0), 0
+    if object visible(1)=1 then d3d_line3d object position x(6), object position y(6), object position z(6), object position x(1), object position y(1), object position z(1), rgb(255, 255, 0), rgb(255, 0, 0), 0 : DecHP2()
+    if object visible(121)=1 then d3d_line3d object position x(6), object position y(6), object position z(6), object position x(121), object position y(121), object position z(121), rgb(255, 255, 0), rgb(255, 0, 0), 0
+  endif
+
+  scale object 12, 100, 100, Enemy(1)*5
+  scale object 13, 100, 100, Enemy(2)*5
+  scale object 14, 100, 100, Enemy(3)*5
+  scale object 15, 100, 100, Enemy(4)*5
+  scale object 16, 100, 100, Enemy(5)*5
+
+  set object to object orientation 12, 7
+  set object to object orientation 13, 8
+  set object to object orientation 14, 9
+  set object to object orientation 15, 10
+  set object to object orientation 16, 11
+
+  position object 12, object position x(7), object position y(7)-15, object position z(7)
+  position object 13, object position x(8), object position y(8)-15, object position z(8)
+  position object 14, object position x(9), object position y(9)-15, object position z(9)
+  position object 15, object position x(10), object position y(10)-15, object position z(10)
+  position object 16, object position x(11), object position y(11)-15, object position z(11)
+endfunction
+
+function _Shoot(O#)
+  acc=rnd(2)-1
+  if O#=1
+    x1=object position x(7)
+    y1=object position y(7)
+    z1=object position z(7)
+
+    x2=object position x(1)
+    y2=object position y(1)
+    z2=object position z(1)
+
+    x3=object position x(2)
+    y3=object position y(2)
+    z3=object position z(2)
+
+    x4=object position x(121)
+    y4=object position y(121)
+    z4=object position z(121)
+
+    if Distance(x1, y2, z1, x2, y2, z2)<Distance(x1, y1, z1, x3, y3, z3) then d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0 : DecHP() : else
+    if Distance(x1, y1, z1, x3, y3, z3)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x3, y3, z3, rgb(0, 255, 0), rgb(0, 255, 0), 0 : else
+    if Distance(x1, y1, z1, x4, y4, z4)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x4, y4, z4, rgb(0, 255, 0), rgb(0, 255, 0), 0
+
+    if Distance(x1, y1, z1, x2, y2, z2)<=20
+      point object 7, x1, 0, z1
+      move object 7, -0.3
+    endif
+  endif
+
+  if O#=2
+    x1=object position x(8)
+    y1=object position y(8)
+    z1=object position z(8)
+
+    x2=object position x(1)
+    y2=object position y(1)
+    z2=object position z(1)
+
+    x3=object position x(2)
+    y3=object position y(2)
+    z3=object position z(2)
+
+    x4=object position x(121)
+    y4=object position y(121)
+    z4=object position z(121)
+
+    if Distance(x1, y2, z1, x2, y2, z2)<Distance(x1, y1, z1, x3, y3, z3) then d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0 : DecHP() : else
+    if Distance(x1, y1, z1, x3, y3, z3)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x3, y3, z3, rgb(0, 255, 0), rgb(0, 255, 0), 0 : else
+    if Distance(x1, y1, z1, x4, y4, z4)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x4, y4, z4, rgb(0, 255, 0), rgb(0, 255, 0), 0
+`    d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0
+
+    if Distance(x1, y1, z1, x2, y2, z2)<=20
+      point object 8, x1, 0, z1
+      move object 8, -0.3
+    endif
+  endif
+
+  if O#=3
+    x1=object position x(9)
+    y1=object position y(9)
+    z1=object position z(9)
+
+    x2=object position x(1)
+    y2=object position y(1)
+    z2=object position z(1)
+
+    x3=object position x(2)
+    y3=object position y(2)
+    z3=object position z(2)
+
+    x4=object position x(121)
+    y4=object position y(121)
+    z4=object position z(121)
+
+    if Distance(x1, y2, z1, x2, y2, z2)<Distance(x1, y1, z1, x3, y3, z3) then d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0 : DecHP() : else
+    if Distance(x1, y1, z1, x3, y3, z3)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x3, y3, z3, rgb(0, 255, 0), rgb(0, 255, 0), 0 : else
+    if Distance(x1, y1, z1, x4, y4, z4)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x4, y4, z4, rgb(0, 255, 0), rgb(0, 255, 0), 0
+`    d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0
+
+    if Distance(x1, y1, z1, x2, y2, z2)<=20
+      point object 9, x1, 0, z1
+      move object 9, -0.3
+    endif
+  endif
+
+  if O#=4
+    x1=object position x(10)
+    y1=object position y(10)
+    z1=object position z(10)
+
+    x2=object position x(1)
+    y2=object position y(1)
+    z2=object position z(1)
+
+    x3=object position x(2)
+    y3=object position y(2)
+    z3=object position z(2)
+
+    x4=object position x(121)
+    y4=object position y(121)
+    z4=object position z(121)
+
+    if Distance(x1, y2, z1, x2, y2, z2)<Distance(x1, y1, z1, x3, y3, z3) then d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0 : DecHP() : else
+    if Distance(x1, y1, z1, x3, y3, z3)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x3, y3, z3, rgb(0, 255, 0), rgb(0, 255, 0), 0 : else
+    if Distance(x1, y1, z1, x4, y4, z4)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x4, y4, z4, rgb(0, 255, 0), rgb(0, 255, 0), 0
+`    d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0
+
+    if Distance(x1, y1, z1, x2, y2, z2)<=20
+      point object 10, x1, 0, z1
+      move object 10, -0.3
+    endif
+  endif
+
+  if O#=5
+    x1=object position x(11)
+    y1=object position y(11)
+    z1=object position z(11)
+
+    x2=object position x(1)
+    y2=object position y(1)
+    z2=object position z(1)
+
+    x3=object position x(2)
+    y3=object position y(2)
+    z3=object position z(2)
+
+    x4=object position x(121)
+    y4=object position y(121)
+    z4=object position z(121)
+
+    if Distance(x1, y1, z1, x2, y2, z2)<Distance(x1, y1, z1, x3, y3, z3) then d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0 : DecHP() : else
+    if Distance(x1, y1, z1, x3, y3, z3)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x3, y3, z3, rgb(0, 255, 0), rgb(0, 255, 0), 0 : else
+    if Distance(x1, y1, z1, x4, y4, z4)<Distance(x1, y1, z1, x2, y3, z2) then d3d_line3d x1, y1, z1, x4, y4, z4, rgb(0, 255, 0), rgb(0, 255, 0), 0
+`    d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 255, 0), rgb(0, 255, 0), 0
+
+    if Distance(x1, y1, z1, x2, y2, z2)<=20
+      point object 11, x1, 0, z1
+      move object 11, -0.3
+    endif
+  endif
+endfunction
+
+function CallTrader
+  x1=object position x(1)
+  y1=object position z(1)
+  position object 3, x1-100, 0, y1-100
+  show object 3
+  point object 1, x1-100, 0, y1-100
+endfunction Trader#
+
+function sqr(a)
+  s=a*a
+endfunction s
+
+function Distance(x1, y1, z1, x2, y2, z2)
+  s=sqrt((sqr(x2)-sqr(x1))+(sqr(y2)-sqr(y1))+(sqr(z2)-sqr(z1)))
+endfunction s
+
+function MoveAlly
+  if object visible(2)=1
+    x1=object position x(1)
+    y1=object position y(1)
+    z1=object position z(1)
+    x2=object position x(2)
+    y2=object position y(2)
+    z2=object position z(2)
+
+    position object 2, x1, z1, y1
+    move object left 2, 90
+    set object to object orientation 2, 1
+
+    Rem Attack
+    if Distance(x2, y2, z2, object position x(7), object position y(7), object position z(7))<=500 then d3d_line3d x2, y2, z2, object position x(7), object position y(7), object position z(7), rgb(0, 0, 255), rgb(0, 0, 255), 0 : dec Enemy(1), 0.5 : else
+    if Distance(x2, y2, z2, object position x(8), object position y(8), object position z(8))<=500 then d3d_line3d x2, y2, z2, object position x(8), object position y(8), object position z(8), rgb(0, 0, 255), rgb(0, 0, 255), 0  : dec Enemy(1), 0.5 : else
+    if Distance(x2, y2, z2, object position x(9), object position y(9), object position z(9))<=500 then d3d_line3d x2, y2, z2, object position x(9), object position y(9), object position z(9), rgb(0, 0, 255), rgb(0, 0, 255), 0  : dec Enemy(1), 0.5 : else
+    if Distance(x2, y2, z2, object position x(10), object position y(10), object position z(10))<=500 then d3d_line3d x2, y2, z2, object position x(10), object position y(10), object position z(10), rgb(0, 0, 255), rgb(0, 0, 255), 0  : dec Enemy(1), 0.5 : else
+    if Distance(x2, y2, z2, object position x(11), object position y(11), object position z(11))<=500 then d3d_line3d x2, y2, z2, object position x(11), object position y(10), object position z(11), rgb(0, 0, 255), rgb(0, 0, 255), 0 : dec Enemy(1), 0.5
+  endif
+endfunction
+
+function CheckAI
+  for i=1 to 6
+    if Enemy(i)<=0 then hide object i+6 `move object i+6, -500000 : Enemy(i)=100
+  next i
+
+  if object visible(6)=1
+    if BossHP#<=0 then hide object 6
+  endif
+endfunction
+
+function MoveNewAI
+  x1=object position x(121)
+  y1=object position y(121)
+  z1=object position z(121)
+
+  for i=1 to 6
+    x2=object position x(i+5)
+    y2=object position y(i+5)
+    z2=object position z(i+5)
+    a(i)=Distance(x1, y1, z1, x2, y2, z2)
+  next i
+
+  min=1
+  for i=2 to 6
+    if a(i)<a(min) then min=i
+  next i
+
+  x2=object position x(min+5)
+  y2=object position y(min+5)
+  z2=object position z(min+5)
+  d3d_line3d x1, y1, z1, x2, y2, z2, rgb(0, 0, 255), rgb(0, 0, 255), 1
+
+  point object 121, x2, y2, z2
+  move object 121, 5
+
+endfunction
+
+function DecHP
+  if acc=0
+    if Armor#>0 then dec Armor#, 0.02 : else dec HP#, 0.05
+  endif  
+endfunction
+
+
+
+
+
+
+
+
+
