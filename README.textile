@@ -1,6 +1,0 @@
-h1. alien-inviders 0.2
-
-h2. Brief overview
-
-This was the second version of my game. The first one is lost.
-This one contains some quest, game saving, AI and inventory features.
