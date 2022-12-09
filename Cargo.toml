@@ -1,0 +1,16 @@
+[package]
+name = "alien-inviders"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+winit = "0.27"
+env_logger = "0.9"
+log = "0.4"
+wgpu = "0.14"
+pollster = "0.2"
+bytemuck = { version = "1.4", features = [ "derive" ] }
+glam = "0.22"
+image = { version = "0.24", features = [ "png", "jpeg" ] }
+imgui = "0.9"
+imgui-winit-support = "0.9" # { version = "0.8", default-features = false, features = [ "winit-26" ] }
