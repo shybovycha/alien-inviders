@@ -16,15 +16,17 @@ impl SceneMainMenu {
     }
 
     pub fn render(
-            self: &mut Self,
-            wgpu_device: &wgpu::Device,
-            wgpu_queue: &wgpu::Queue,
-            window: &winit::window::Window,
-            imgui_renderer: &mut imgui_wgpu::Renderer,
-            winit_platform: &mut imgui_winit_support::WinitPlatform,
-            imgui: &mut imgui::Context,
-            command_encoder: &mut wgpu::CommandEncoder,
-            color_attachment_view: &wgpu::TextureView) -> &Self {
+        self: &mut Self,
+        wgpu_device: &wgpu::Device,
+        wgpu_queue: &wgpu::Queue,
+        window: &winit::window::Window,
+        imgui_renderer: &mut imgui_wgpu::Renderer,
+        winit_platform: &mut imgui_winit_support::WinitPlatform,
+        imgui: &mut imgui::Context,
+        command_encoder: &mut wgpu::CommandEncoder,
+        color_attachment_view: &wgpu::TextureView,
+        go_play: &mut dyn FnMut(),
+    ) -> &Self {
 
         let now = std::time::Instant::now();
         let delta_s = now - self.last_frame_timestamp.elapsed();
@@ -39,11 +41,19 @@ impl SceneMainMenu {
 
         let window1 = ui.window("Hello world");
 
+        let mut should_go_play = false;
+
         window1
             .size([300.0, 100.0], imgui::Condition::FirstUseEver)
             .build(|| {
                 ui.text("Hello world!");
                 ui.text("This...is...imgui-rs on WGPU!");
+                ui.separator();
+
+                if ui.button("PLAY!") {
+                    should_go_play = true;
+                }
+
                 ui.separator();
                 let mouse_pos = ui.io().mouse_pos;
                 ui.text(format!(
@@ -89,6 +99,10 @@ impl SceneMainMenu {
         imgui_renderer
             .render(imgui.render(), &wgpu_queue, &wgpu_device, &mut gui_render_pass)
             .expect("Rendering failed");
+
+        if should_go_play {
+            go_play();
+        }
 
         self
     }

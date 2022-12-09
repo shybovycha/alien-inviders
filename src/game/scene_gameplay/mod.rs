@@ -121,7 +121,13 @@ impl SceneGameplay {
         }
     }
 
-    pub fn render(self: &Self, command_encoder: &mut wgpu::CommandEncoder, color_attachment_view: &wgpu::TextureView) -> &Self {
+    pub fn render(
+        self: &Self,
+        command_encoder: &mut wgpu::CommandEncoder,
+        color_attachment_view: &wgpu::TextureView,
+        go_to_main_menu: &mut dyn FnMut(),
+    ) -> &Self {
+
         let mut render_pass = command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             label: Some("Render Pass"),
 

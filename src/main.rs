@@ -95,7 +95,7 @@ fn main() {
 
     {
         // TODO: temporary
-        game.set_state(game::SceneState::SceneMainMenu);
+        game.set_state(game::SceneState::MainMenu);
     }
 
     event_loop.run(move |event, _, control_flow| {
