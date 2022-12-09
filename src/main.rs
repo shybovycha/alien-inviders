@@ -5,7 +5,6 @@ use winit::{
 };
 
 use pollster::FutureExt as _;
-use imgui::*;
 
 pub mod imgui_wgpu;
 pub mod game;
@@ -82,29 +81,21 @@ fn main() {
         }),
     }]);
 
-    let clear_color = wgpu::Color {
-        r: 0.1,
-        g: 0.2,
-        b: 0.3,
-        a: 1.0,
-    };
-
     let renderer_config = imgui_wgpu::RendererConfig {
         texture_format: surface_config.format,
         ..Default::default()
     };
 
-    let mut renderer = imgui_wgpu::Renderer::new(&mut imgui, &device, &queue, renderer_config);
+    let mut imgui_renderer = imgui_wgpu::Renderer::new(&mut imgui, &device, &queue, renderer_config);
 
-    let mut last_frame = std::time::Instant::now();
-    let mut last_cursor = None;
-    let mut demo_open = true;
-
-    let mut game = game::Game::new(&device, &surface_config);
+    let mut game = game::Game::new(
+        &device,
+        &surface_config,
+    );
 
     {
         // TODO: temporary
-        game.set_state(game::SceneState::SceneGameplay);
+        game.set_state(game::SceneState::SceneMainMenu);
     }
 
     event_loop.run(move |event, _, control_flow| {
@@ -139,53 +130,8 @@ fn main() {
             },
 
             Event::RedrawRequested(window_id) if window_id == window.id() => {
-                // update GUI
-                let now = std::time::Instant::now();
-                let delta_s = now - last_frame.elapsed();
-                imgui.io_mut().update_delta_time(now - last_frame);
-                last_frame = now;
-
                 // render
                 let output = surface.get_current_texture().unwrap();
-
-                platform
-                    .prepare_frame(imgui.io_mut(), &window)
-                    .expect("Failed to prepare frame");
-
-                let ui = imgui.frame();
-
-                {
-                    let window = ui.window("Hello world");
-
-                    window
-                        .size([300.0, 100.0], Condition::FirstUseEver)
-                        .build(|| {
-                            ui.text("Hello world!");
-                            ui.text("This...is...imgui-rs on WGPU!");
-                            ui.separator();
-                            let mouse_pos = ui.io().mouse_pos;
-                            ui.text(format!(
-                                "Mouse Position: ({:.1},{:.1})",
-                                mouse_pos[0], mouse_pos[1]
-                            ));
-                        });
-
-                    let window = ui.window("Hello too");
-
-                    window
-                        .size([400.0, 200.0], Condition::FirstUseEver)
-                        .position([400.0, 200.0], Condition::FirstUseEver)
-                        .build(|| {
-                            ui.text(format!("Frametime: {:?}", delta_s));
-                        });
-
-                    ui.show_demo_window(&mut demo_open);
-                }
-
-                if last_cursor != Some(ui.mouse_cursor()) {
-                    last_cursor = Some(ui.mouse_cursor());
-                    platform.prepare_render(&ui, &window);
-                }
 
                 let view = output.texture.create_view(&wgpu::TextureViewDescriptor::default());
 
@@ -193,28 +139,16 @@ fn main() {
                     label: Some("Render Encoder"),
                 });
 
-                {
-                    game.render(&mut command_encoder, &view);
-                }
-
-                {
-                    let mut gui_render_pass = command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
-                        label: None,
-                        color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                            view: &view,
-                            resolve_target: None,
-                            ops: wgpu::Operations {
-                                load: wgpu::LoadOp::Clear(clear_color),
-                                store: true,
-                            },
-                        })],
-                        depth_stencil_attachment: None,
-                    });
-
-                    renderer
-                        .render(imgui.render(), &queue, &device, &mut gui_render_pass)
-                        .expect("Rendering failed");
-                }
+                game.render(
+                    &device,
+                    &queue,
+                    &window,
+                    &mut imgui_renderer,
+                    &mut platform,
+                    &mut imgui,
+                    &mut command_encoder,
+                    &view,
+                );
 
                 queue.submit(std::iter::once(command_encoder.finish()));
 
