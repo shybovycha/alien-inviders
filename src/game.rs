@@ -4,11 +4,12 @@ pub mod scene_main_menu;
 pub mod scene_new_game_intro;
 pub mod scene_gameplay;
 
+#[derive(Clone, Copy, PartialEq)]
 pub enum SceneState {
     Loading,
-    SceneMainMenu,
-    SceneNewGame,
-    SceneGameplay,
+    MainMenu,
+    NewGame,
+    Gameplay,
 }
 
 pub struct Game {
@@ -44,15 +45,18 @@ impl Game {
             command_encoder: &mut wgpu::CommandEncoder,
             color_attachment_view: &wgpu::TextureView) -> &Self {
 
+        let mut next_state = self.current_state;
+
         match self.current_state {
-            SceneState::SceneGameplay => {
+            SceneState::Gameplay => {
                 self.scene_gameplay.render(
                     command_encoder,
                     color_attachment_view,
+                    &mut || { next_state = SceneState::MainMenu },
                 );
             },
 
-            SceneState::SceneMainMenu => {
+            SceneState::MainMenu => {
                 self.scene_main_menu.render(
                     wgpu_device,
                     wgpu_queue,
@@ -62,10 +66,15 @@ impl Game {
                     imgui,
                     command_encoder,
                     color_attachment_view,
+                    &mut || { next_state = SceneState::Gameplay; }
                 );
             },
 
             _ => (),
+        }
+
+        if next_state != self.current_state {
+            self.set_state(next_state);
         }
 
         self
