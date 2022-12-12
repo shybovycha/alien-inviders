@@ -1,4 +1,4 @@
-use super::RendererState;
+use super::{RendererState, RendererOutputState};
 
 pub struct SceneMainMenu {
     demo_open: bool,
@@ -18,6 +18,7 @@ impl SceneMainMenu {
     pub fn render(
         self: &mut Self,
         renderer_state: &mut RendererState,
+        output_state: &mut RendererOutputState,
         go_play: &mut dyn FnMut(),
     ) -> &Self {
 
@@ -71,10 +72,10 @@ impl SceneMainMenu {
             renderer_state.winit_platform.prepare_render(&ui, &renderer_state.window);
         }
 
-        let mut gui_render_pass = renderer_state.command_encoder.as_mut().expect("Command encoder was not provided").begin_render_pass(&wgpu::RenderPassDescriptor {
+        let mut gui_render_pass = output_state.command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             label: None,
             color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                view: &renderer_state.color_attachment_view.expect("View was not provided"),
+                view: &output_state.color_attachment_view,
                 resolve_target: None,
                 ops: wgpu::Operations {
                     load: wgpu::LoadOp::Clear(wgpu::Color {

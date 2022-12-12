@@ -1,6 +1,6 @@
 use wgpu::util::DeviceExt;
 
-use super::RendererState;
+use super::{RendererState, RendererOutputState};
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
@@ -126,18 +126,17 @@ impl SceneGameplay {
     pub fn render(
         self: &Self,
         renderer_state: &mut RendererState,
+        output_state: &mut RendererOutputState,
         go_to_main_menu: &mut dyn FnMut(),
     ) -> &Self {
 
-        let command_encoder = renderer_state.command_encoder.as_mut().expect("Command encoder was not provided");
-
-        let mut render_pass = command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+        let mut render_pass = output_state.command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             label: Some("Render Pass"),
 
             color_attachments: &[
                 // This is what @location(0) in the fragment shader targets
                 Some(wgpu::RenderPassColorAttachment {
-                    view: renderer_state.color_attachment_view.as_ref().expect("View was not provided"),
+                    view: output_state.color_attachment_view,
                     resolve_target: None,
                     ops: wgpu::Operations {
                         load: wgpu::LoadOp::Clear(

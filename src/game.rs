@@ -19,8 +19,11 @@ pub struct RendererState<'a> {
     pub imgui_renderer: &'a mut imgui_wgpu::Renderer,
     pub winit_platform: &'a mut imgui_winit_support::WinitPlatform,
     pub imgui: &'a mut imgui::Context,
-    pub command_encoder: Option<&'a mut wgpu::CommandEncoder>,
-    pub color_attachment_view: Option<&'a wgpu::TextureView>,
+}
+
+pub struct RendererOutputState<'a> {
+    pub command_encoder: &'a mut wgpu::CommandEncoder,
+    pub color_attachment_view: &'a wgpu::TextureView,
 }
 
 pub struct Game {
@@ -84,13 +87,14 @@ impl Game {
         self
     }
 
-    pub fn render(self: &mut Self, renderer_state: &mut RendererState) -> &Self {
+    pub fn render(self: &mut Self, renderer_state: &mut RendererState, output_state: &mut RendererOutputState) -> &Self {
         let mut next_state = self.current_state;
 
         match self.current_state {
             SceneState::Gameplay => {
                 self.scene_gameplay.render(
                     renderer_state,
+                    output_state,
                     &mut || { next_state = SceneState::MainMenu },
                 );
             },
@@ -98,6 +102,7 @@ impl Game {
             SceneState::MainMenu => {
                 self.scene_main_menu.render(
                     renderer_state,
+                    output_state,
                     &mut || { next_state = SceneState::Gameplay; }
                 );
             },

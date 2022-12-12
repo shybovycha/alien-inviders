@@ -104,8 +104,6 @@ fn main() {
                 imgui_renderer: &mut imgui_renderer,
                 winit_platform: &mut platform,
                 imgui: &mut imgui,
-                command_encoder: None,
-                color_attachment_view: None,
             },
         );
     }
@@ -159,8 +157,10 @@ fn main() {
                         imgui_renderer: &mut imgui_renderer,
                         winit_platform: &mut platform,
                         imgui: &mut imgui,
-                        command_encoder: Some(&mut command_encoder),
-                        color_attachment_view: Some(&view),
+                    },
+                    &mut game::RendererOutputState {
+                        command_encoder: &mut command_encoder,
+                        color_attachment_view: &view,
                     },
                 );
 
@@ -185,8 +185,6 @@ fn main() {
                 imgui_renderer: &mut imgui_renderer,
                 winit_platform: &mut platform,
                 imgui: &mut imgui,
-                command_encoder: None,
-                color_attachment_view: None,
             },
         );
     });
