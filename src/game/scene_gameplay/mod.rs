@@ -162,4 +162,63 @@ impl SceneGameplay {
 
         self
     }
+
+    pub fn post_process_event<T>(
+        &mut self,
+        event: winit::event::Event<T>,
+        window: &winit::window::Window,
+        winit_platform: &mut imgui_winit_support::WinitPlatform,
+        imgui: &mut imgui::Context,
+        go_to_main_menu: &mut dyn FnMut()) -> &Self {
+
+        match event {
+            winit::event::Event::WindowEvent {
+                event: winit::event::WindowEvent::KeyboardInput {
+                    input: winit::event::KeyboardInput {
+                        state: winit::event::ElementState::Pressed,
+                        virtual_keycode: Some(winit::event::VirtualKeyCode::Escape),
+                        ..
+                    },
+                    ..
+                },
+                ..
+            } => {
+                go_to_main_menu();
+            },
+
+            _ => (),
+        }
+
+        self
+    }
+
+    pub fn on_enter_scene(&mut self, window: &winit::window::Window) -> &Self {
+        // capture mouse cursor
+        window.set_cursor_grab(winit::window::CursorGrabMode::Confined)
+            .or_else(|_e| window.set_cursor_grab(winit::window::CursorGrabMode::Locked))
+            .unwrap();
+
+        let window_size = window.inner_size();
+
+        window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
+
+        window.set_cursor_visible(false);
+
+        self
+    }
+
+    pub fn on_leave_scene(&mut self, window: &winit::window::Window) -> &Self {
+        // release mouse cursor
+        window.set_cursor_grab(winit::window::CursorGrabMode::None)
+            .or_else(|_e| window.set_cursor_grab(winit::window::CursorGrabMode::None))
+            .unwrap();
+
+        let window_size = window.inner_size();
+
+        window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
+
+        window.set_cursor_visible(true);
+
+        self
+    }
 }

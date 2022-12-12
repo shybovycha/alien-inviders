@@ -95,7 +95,7 @@ fn main() {
 
     {
         // TODO: temporary
-        game.set_state(game::SceneState::MainMenu);
+        game.set_scene_state(game::SceneState::MainMenu, &window);
     }
 
     event_loop.run(move |event, _, control_flow| {
@@ -163,6 +163,6 @@ fn main() {
             _ => {}
         }
 
-        platform.handle_event(imgui.io_mut(), &window, &event);
+        game.post_process_event(event, &window, &mut platform, &mut imgui);
     });
 }

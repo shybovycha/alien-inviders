@@ -29,8 +29,35 @@ impl Game {
         }
     }
 
-    pub fn set_state(self: &mut Self, new_state: SceneState) -> &mut Self {
+    pub fn set_scene_state(self: &mut Self, new_state: SceneState, window: &winit::window::Window) -> &mut Self {
+        // before switching the scene
+        match self.current_state {
+            SceneState::Gameplay => {
+                self.scene_gameplay.on_leave_scene(window);
+            },
+
+            SceneState::MainMenu => {
+                self.scene_main_menu.on_leave_scene(window);
+            },
+
+            _ => (),
+        }
+
         self.current_state = new_state;
+
+        // after switching the scene
+        match new_state {
+            SceneState::Gameplay => {
+                self.scene_gameplay.on_enter_scene(window);
+            },
+
+            SceneState::MainMenu => {
+                self.scene_main_menu.on_enter_scene(window);
+            },
+
+            _ => (),
+        }
+
         self
     }
 
@@ -74,7 +101,35 @@ impl Game {
         }
 
         if next_state != self.current_state {
-            self.set_state(next_state);
+            self.set_scene_state(next_state, window);
+        }
+
+        self
+    }
+
+    pub fn post_process_event<T>(
+        &mut self,
+        event: winit::event::Event<T>,
+        window: &winit::window::Window,
+        winit_platform: &mut imgui_winit_support::WinitPlatform,
+        imgui: &mut imgui::Context) -> &Self {
+
+        let mut next_state = self.current_state;
+
+        match self.current_state {
+            SceneState::MainMenu => {
+                self.scene_main_menu.post_process_event(event, window, winit_platform, imgui);
+            },
+
+            SceneState::Gameplay => {
+                self.scene_gameplay.post_process_event(event, window, winit_platform, imgui, &mut || { next_state = SceneState::MainMenu });
+            },
+
+            _ => (),
+        }
+
+        if next_state != self.current_state {
+            self.set_scene_state(next_state, window);
         }
 
         self

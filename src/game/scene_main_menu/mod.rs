@@ -106,4 +106,46 @@ impl SceneMainMenu {
 
         self
     }
+
+    pub fn post_process_event<T>(
+        &mut self,
+        event: winit::event::Event<T>,
+        window: &winit::window::Window,
+        winit_platform: &mut imgui_winit_support::WinitPlatform,
+        imgui: &mut imgui::Context) -> &Self {
+
+        winit_platform.handle_event(imgui.io_mut(), &window, &event);
+
+        self
+    }
+
+    pub fn on_enter_scene(&mut self, window: &winit::window::Window) -> &Self {
+        // release mouse cursor
+        window.set_cursor_grab(winit::window::CursorGrabMode::None)
+            .or_else(|_e| window.set_cursor_grab(winit::window::CursorGrabMode::None))
+            .unwrap();
+
+        let window_size = window.inner_size();
+
+        window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
+
+        window.set_cursor_visible(true);
+
+        self
+    }
+
+    pub fn on_leave_scene(&mut self, window: &winit::window::Window) -> &Self {
+        // capture mouse cursor
+        window.set_cursor_grab(winit::window::CursorGrabMode::Confined)
+            .or_else(|_e| window.set_cursor_grab(winit::window::CursorGrabMode::Locked))
+            .unwrap();
+
+        let window_size = window.inner_size();
+
+        window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
+
+        window.set_cursor_visible(false);
+
+        self
+    }
 }
