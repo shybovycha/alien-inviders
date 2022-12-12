@@ -89,8 +89,15 @@ fn main() {
     let mut imgui_renderer = imgui_wgpu::Renderer::new(&mut imgui, &device, &queue, renderer_config);
 
     let mut game = game::Game::new(
-        &device,
-        &surface_config,
+        &mut game::RendererState {
+            wgpu_device: &device,
+            wgpu_queue: &queue,
+            window: &window,
+            surface_config: &surface_config,
+            imgui_renderer: &mut imgui_renderer,
+            winit_platform: &mut platform,
+            imgui: &mut imgui,
+        },
     );
 
     {
@@ -101,6 +108,7 @@ fn main() {
                 wgpu_device: &device,
                 wgpu_queue: &queue,
                 window: &window,
+                surface_config: &surface_config,
                 imgui_renderer: &mut imgui_renderer,
                 winit_platform: &mut platform,
                 imgui: &mut imgui,
@@ -154,6 +162,7 @@ fn main() {
                         wgpu_device: &device,
                         wgpu_queue: &queue,
                         window: &window,
+                        surface_config: &surface_config,
                         imgui_renderer: &mut imgui_renderer,
                         winit_platform: &mut platform,
                         imgui: &mut imgui,
@@ -182,6 +191,7 @@ fn main() {
                 wgpu_device: &device,
                 wgpu_queue: &queue,
                 window: &window,
+                surface_config: &surface_config,
                 imgui_renderer: &mut imgui_renderer,
                 winit_platform: &mut platform,
                 imgui: &mut imgui,

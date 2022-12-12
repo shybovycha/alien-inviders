@@ -16,6 +16,7 @@ pub struct RendererState<'a> {
     pub wgpu_device: &'a wgpu::Device,
     pub wgpu_queue: &'a wgpu::Queue,
     pub window: &'a winit::window::Window,
+    pub surface_config: &'a wgpu::SurfaceConfiguration,
     pub imgui_renderer: &'a mut imgui_wgpu::Renderer,
     pub winit_platform: &'a mut imgui_winit_support::WinitPlatform,
     pub imgui: &'a mut imgui::Context,
@@ -34,11 +35,11 @@ pub struct Game {
 }
 
 impl Game {
-    pub fn new(wgpu_device: &wgpu::Device, surface_config: &wgpu::SurfaceConfiguration) -> Self {
+    pub fn new(renderer_state: &mut RendererState) -> Self {
         Self {
             current_state: SceneState::Loading,
 
-            scene_gameplay: scene_gameplay::SceneGameplay::new(wgpu_device, surface_config),
+            scene_gameplay: scene_gameplay::SceneGameplay::new(renderer_state),
             scene_main_menu: scene_main_menu::SceneMainMenu::new(),
         }
     }

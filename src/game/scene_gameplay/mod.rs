@@ -37,19 +37,19 @@ pub struct SceneGameplay {
 }
 
 impl SceneGameplay {
-    pub fn new(wgpu_device: &wgpu::Device, surface_config: &wgpu::SurfaceConfiguration) -> Self {
-        let shader = wgpu_device.create_shader_module(wgpu::ShaderModuleDescriptor {
+    pub fn new(renderer_state: &mut RendererState) -> Self {
+        let shader = renderer_state.wgpu_device.create_shader_module(wgpu::ShaderModuleDescriptor {
             label: Some("Shader"),
             source: wgpu::ShaderSource::Wgsl(include_str!("shader.wgsl").into()),
         });
 
-        let render_pipeline_layout = wgpu_device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+        let render_pipeline_layout = renderer_state.wgpu_device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
             label: Some("Render Pipeline Layout"),
             bind_group_layouts: &[],
             push_constant_ranges: &[],
         });
 
-        let render_pipeline = wgpu_device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+        let render_pipeline = renderer_state.wgpu_device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
             layout: Some(&render_pipeline_layout),
             vertex: wgpu::VertexState {
@@ -63,7 +63,7 @@ impl SceneGameplay {
                 module: &shader,
                 entry_point: "fs_main",
                 targets: &[Some(wgpu::ColorTargetState {
-                    format: surface_config.format,
+                    format: renderer_state.surface_config.format,
                     blend: Some(wgpu::BlendState::REPLACE),
                     write_mask: wgpu::ColorWrites::ALL,
                 })],
@@ -99,7 +99,7 @@ impl SceneGameplay {
             0, 1, 2,
         ];
 
-        let vertex_buffer = wgpu_device.create_buffer_init(
+        let vertex_buffer = renderer_state.wgpu_device.create_buffer_init(
             &wgpu::util::BufferInitDescriptor {
                 label: Some("Vertex Buffer"),
                 contents: bytemuck::cast_slice(VERTICES),
@@ -107,7 +107,7 @@ impl SceneGameplay {
             }
         );
 
-        let index_buffer = wgpu_device.create_buffer_init(
+        let index_buffer = renderer_state.wgpu_device.create_buffer_init(
             &wgpu::util::BufferInitDescriptor {
                 label: Some("Vertex Buffer"),
                 contents: bytemuck::cast_slice(INDICES),
