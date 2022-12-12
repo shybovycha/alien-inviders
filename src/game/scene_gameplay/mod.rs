@@ -1,5 +1,7 @@
 use wgpu::util::DeviceExt;
 
+use super::RendererState;
+
 #[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
 struct Vertex {
@@ -123,10 +125,11 @@ impl SceneGameplay {
 
     pub fn render(
         self: &Self,
-        command_encoder: &mut wgpu::CommandEncoder,
-        color_attachment_view: &wgpu::TextureView,
+        renderer_state: &mut RendererState,
         go_to_main_menu: &mut dyn FnMut(),
     ) -> &Self {
+
+        let command_encoder = renderer_state.command_encoder.as_mut().expect("Command encoder was not provided");
 
         let mut render_pass = command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
             label: Some("Render Pass"),
@@ -134,7 +137,7 @@ impl SceneGameplay {
             color_attachments: &[
                 // This is what @location(0) in the fragment shader targets
                 Some(wgpu::RenderPassColorAttachment {
-                    view: &color_attachment_view,
+                    view: renderer_state.color_attachment_view.as_ref().expect("View was not provided"),
                     resolve_target: None,
                     ops: wgpu::Operations {
                         load: wgpu::LoadOp::Clear(
@@ -166,9 +169,7 @@ impl SceneGameplay {
     pub fn post_process_event<T>(
         &mut self,
         event: winit::event::Event<T>,
-        window: &winit::window::Window,
-        winit_platform: &mut imgui_winit_support::WinitPlatform,
-        imgui: &mut imgui::Context,
+        renderer_state: &mut RendererState,
         go_to_main_menu: &mut dyn FnMut()) -> &Self {
 
         match event {
@@ -192,32 +193,32 @@ impl SceneGameplay {
         self
     }
 
-    pub fn on_enter_scene(&mut self, window: &winit::window::Window) -> &Self {
+    pub fn on_enter_scene(&mut self, renderer_state: &mut RendererState) -> &Self {
         // capture mouse cursor
-        window.set_cursor_grab(winit::window::CursorGrabMode::Confined)
-            .or_else(|_e| window.set_cursor_grab(winit::window::CursorGrabMode::Locked))
+        renderer_state.window.set_cursor_grab(winit::window::CursorGrabMode::Confined)
+            .or_else(|_e| renderer_state.window.set_cursor_grab(winit::window::CursorGrabMode::Locked))
             .unwrap();
 
-        let window_size = window.inner_size();
+        let window_size = renderer_state.window.inner_size();
 
-        window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
+        renderer_state.window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
 
-        window.set_cursor_visible(false);
+        renderer_state.window.set_cursor_visible(false);
 
         self
     }
 
-    pub fn on_leave_scene(&mut self, window: &winit::window::Window) -> &Self {
+    pub fn on_leave_scene(&mut self, renderer_state: &mut RendererState) -> &Self {
         // release mouse cursor
-        window.set_cursor_grab(winit::window::CursorGrabMode::None)
-            .or_else(|_e| window.set_cursor_grab(winit::window::CursorGrabMode::None))
+        renderer_state.window.set_cursor_grab(winit::window::CursorGrabMode::None)
+            .or_else(|_e| renderer_state.window.set_cursor_grab(winit::window::CursorGrabMode::None))
             .unwrap();
 
-        let window_size = window.inner_size();
+        let window_size = renderer_state.window.inner_size();
 
-        window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
+        renderer_state.window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
 
-        window.set_cursor_visible(true);
+        renderer_state.window.set_cursor_visible(true);
 
         self
     }

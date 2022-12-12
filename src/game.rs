@@ -12,6 +12,17 @@ pub enum SceneState {
     Gameplay,
 }
 
+pub struct RendererState<'a> {
+    pub wgpu_device: &'a wgpu::Device,
+    pub wgpu_queue: &'a wgpu::Queue,
+    pub window: &'a winit::window::Window,
+    pub imgui_renderer: &'a mut imgui_wgpu::Renderer,
+    pub winit_platform: &'a mut imgui_winit_support::WinitPlatform,
+    pub imgui: &'a mut imgui::Context,
+    pub command_encoder: Option<&'a mut wgpu::CommandEncoder>,
+    pub color_attachment_view: Option<&'a wgpu::TextureView>,
+}
+
 pub struct Game {
     current_state: SceneState,
 
@@ -29,30 +40,14 @@ impl Game {
         }
     }
 
-    pub fn set_scene_state(self: &mut Self, new_state: SceneState, window: &winit::window::Window) -> &mut Self {
-        // before switching the scene
+    fn before_scene_switched(self: &mut Self, renderer_state: &mut RendererState) -> &mut Self {
         match self.current_state {
             SceneState::Gameplay => {
-                self.scene_gameplay.on_leave_scene(window);
+                self.scene_gameplay.on_leave_scene(renderer_state);
             },
 
             SceneState::MainMenu => {
-                self.scene_main_menu.on_leave_scene(window);
-            },
-
-            _ => (),
-        }
-
-        self.current_state = new_state;
-
-        // after switching the scene
-        match new_state {
-            SceneState::Gameplay => {
-                self.scene_gameplay.on_enter_scene(window);
-            },
-
-            SceneState::MainMenu => {
-                self.scene_main_menu.on_enter_scene(window);
+                self.scene_main_menu.on_leave_scene(renderer_state);
             },
 
             _ => (),
@@ -61,38 +56,48 @@ impl Game {
         self
     }
 
-    pub fn render(
-            self: &mut Self,
-            wgpu_device: &wgpu::Device,
-            wgpu_queue: &wgpu::Queue,
-            window: &winit::window::Window,
-            imgui_renderer: &mut imgui_wgpu::Renderer,
-            winit_platform: &mut imgui_winit_support::WinitPlatform,
-            imgui: &mut imgui::Context,
-            command_encoder: &mut wgpu::CommandEncoder,
-            color_attachment_view: &wgpu::TextureView) -> &Self {
+    fn after_scene_switched(self: &mut Self, renderer_state: &mut RendererState) -> &mut Self {
+        match self.current_state {
+            SceneState::Gameplay => {
+                self.scene_gameplay.on_enter_scene(renderer_state);
+            },
 
+            SceneState::MainMenu => {
+                self.scene_main_menu.on_enter_scene(renderer_state);
+            },
+
+            _ => (),
+        }
+
+        self
+    }
+
+    pub fn set_scene_state(self: &mut Self, new_state: SceneState, renderer_state: &mut RendererState) -> &mut Self {
+        // before switching the scene
+        self.before_scene_switched(renderer_state);
+
+        self.current_state = new_state;
+
+        // after switching the scene
+        self.after_scene_switched(renderer_state);
+
+        self
+    }
+
+    pub fn render(self: &mut Self, renderer_state: &mut RendererState) -> &Self {
         let mut next_state = self.current_state;
 
         match self.current_state {
             SceneState::Gameplay => {
                 self.scene_gameplay.render(
-                    command_encoder,
-                    color_attachment_view,
+                    renderer_state,
                     &mut || { next_state = SceneState::MainMenu },
                 );
             },
 
             SceneState::MainMenu => {
                 self.scene_main_menu.render(
-                    wgpu_device,
-                    wgpu_queue,
-                    window,
-                    imgui_renderer,
-                    winit_platform,
-                    imgui,
-                    command_encoder,
-                    color_attachment_view,
+                    renderer_state,
                     &mut || { next_state = SceneState::Gameplay; }
                 );
             },
@@ -101,7 +106,7 @@ impl Game {
         }
 
         if next_state != self.current_state {
-            self.set_scene_state(next_state, window);
+            self.set_scene_state(next_state, renderer_state);
         }
 
         self
@@ -110,26 +115,24 @@ impl Game {
     pub fn post_process_event<T>(
         &mut self,
         event: winit::event::Event<T>,
-        window: &winit::window::Window,
-        winit_platform: &mut imgui_winit_support::WinitPlatform,
-        imgui: &mut imgui::Context) -> &Self {
+        renderer_state: &mut RendererState) -> &Self {
 
         let mut next_state = self.current_state;
 
         match self.current_state {
             SceneState::MainMenu => {
-                self.scene_main_menu.post_process_event(event, window, winit_platform, imgui);
+                self.scene_main_menu.post_process_event(event, renderer_state);
             },
 
             SceneState::Gameplay => {
-                self.scene_gameplay.post_process_event(event, window, winit_platform, imgui, &mut || { next_state = SceneState::MainMenu });
+                self.scene_gameplay.post_process_event(event, renderer_state, &mut || { next_state = SceneState::MainMenu });
             },
 
             _ => (),
         }
 
         if next_state != self.current_state {
-            self.set_scene_state(next_state, window);
+            self.set_scene_state(next_state, renderer_state);
         }
 
         self

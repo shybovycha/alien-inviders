@@ -1,4 +1,4 @@
-use crate::imgui_wgpu;
+use super::RendererState;
 
 pub struct SceneMainMenu {
     demo_open: bool,
@@ -17,27 +17,20 @@ impl SceneMainMenu {
 
     pub fn render(
         self: &mut Self,
-        wgpu_device: &wgpu::Device,
-        wgpu_queue: &wgpu::Queue,
-        window: &winit::window::Window,
-        imgui_renderer: &mut imgui_wgpu::Renderer,
-        winit_platform: &mut imgui_winit_support::WinitPlatform,
-        imgui: &mut imgui::Context,
-        command_encoder: &mut wgpu::CommandEncoder,
-        color_attachment_view: &wgpu::TextureView,
+        renderer_state: &mut RendererState,
         go_play: &mut dyn FnMut(),
     ) -> &Self {
 
         let now = std::time::Instant::now();
         let delta_s = now - self.last_frame_timestamp.elapsed();
-        imgui.io_mut().update_delta_time(now - self.last_frame_timestamp);
+        renderer_state.imgui.io_mut().update_delta_time(now - self.last_frame_timestamp);
         self.last_frame_timestamp = now;
 
-        winit_platform
-            .prepare_frame(imgui.io_mut(), &window)
+        renderer_state.winit_platform
+            .prepare_frame(renderer_state.imgui.io_mut(), &renderer_state.window)
             .expect("Failed to prepare frame");
 
-        let ui = imgui.frame();
+        let ui = renderer_state.imgui.frame();
 
         let window1 = ui.window("Hello world");
 
@@ -75,13 +68,13 @@ impl SceneMainMenu {
 
         if self.last_cursor != ui.mouse_cursor() {
             self.last_cursor = ui.mouse_cursor();
-            winit_platform.prepare_render(&ui, &window);
+            renderer_state.winit_platform.prepare_render(&ui, &renderer_state.window);
         }
 
-        let mut gui_render_pass = command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+        let mut gui_render_pass = renderer_state.command_encoder.as_mut().expect("Command encoder was not provided").begin_render_pass(&wgpu::RenderPassDescriptor {
             label: None,
             color_attachments: &[Some(wgpu::RenderPassColorAttachment {
-                view: &color_attachment_view,
+                view: &renderer_state.color_attachment_view.expect("View was not provided"),
                 resolve_target: None,
                 ops: wgpu::Operations {
                     load: wgpu::LoadOp::Clear(wgpu::Color {
@@ -96,8 +89,8 @@ impl SceneMainMenu {
             depth_stencil_attachment: None,
         });
 
-        imgui_renderer
-            .render(imgui.render(), &wgpu_queue, &wgpu_device, &mut gui_render_pass)
+        renderer_state.imgui_renderer
+            .render(renderer_state.imgui.render(), &renderer_state.wgpu_queue, &renderer_state.wgpu_device, &mut gui_render_pass)
             .expect("Rendering failed");
 
         if should_go_play {
@@ -110,41 +103,39 @@ impl SceneMainMenu {
     pub fn post_process_event<T>(
         &mut self,
         event: winit::event::Event<T>,
-        window: &winit::window::Window,
-        winit_platform: &mut imgui_winit_support::WinitPlatform,
-        imgui: &mut imgui::Context) -> &Self {
+        renderer_state: &mut RendererState) -> &Self {
 
-        winit_platform.handle_event(imgui.io_mut(), &window, &event);
+        renderer_state.winit_platform.handle_event(renderer_state.imgui.io_mut(), &renderer_state.window, &event);
 
         self
     }
 
-    pub fn on_enter_scene(&mut self, window: &winit::window::Window) -> &Self {
+    pub fn on_enter_scene(&mut self, renderer_state: &mut RendererState) -> &Self {
         // release mouse cursor
-        window.set_cursor_grab(winit::window::CursorGrabMode::None)
-            .or_else(|_e| window.set_cursor_grab(winit::window::CursorGrabMode::None))
+        renderer_state.window.set_cursor_grab(winit::window::CursorGrabMode::None)
+            .or_else(|_e| renderer_state.window.set_cursor_grab(winit::window::CursorGrabMode::None))
             .unwrap();
 
-        let window_size = window.inner_size();
+        let window_size = renderer_state.window.inner_size();
 
-        window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
+        renderer_state.window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
 
-        window.set_cursor_visible(true);
+        renderer_state.window.set_cursor_visible(true);
 
         self
     }
 
-    pub fn on_leave_scene(&mut self, window: &winit::window::Window) -> &Self {
+    pub fn on_leave_scene(&mut self, renderer_state: &mut RendererState) -> &Self {
         // capture mouse cursor
-        window.set_cursor_grab(winit::window::CursorGrabMode::Confined)
-            .or_else(|_e| window.set_cursor_grab(winit::window::CursorGrabMode::Locked))
+        renderer_state.window.set_cursor_grab(winit::window::CursorGrabMode::Confined)
+            .or_else(|_e| renderer_state.window.set_cursor_grab(winit::window::CursorGrabMode::Locked))
             .unwrap();
 
-        let window_size = window.inner_size();
+        let window_size = renderer_state.window.inner_size();
 
-        window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
+        renderer_state.window.set_cursor_position(winit::dpi::PhysicalPosition::new(window_size.width as f32 / 2.0, window_size.height as f32 / 2.0)).unwrap();
 
-        window.set_cursor_visible(false);
+        renderer_state.window.set_cursor_visible(false);
 
         self
     }

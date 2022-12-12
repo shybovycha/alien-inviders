@@ -95,7 +95,19 @@ fn main() {
 
     {
         // TODO: temporary
-        game.set_scene_state(game::SceneState::MainMenu, &window);
+        game.set_scene_state(
+            game::SceneState::MainMenu,
+            &mut game::RendererState {
+                wgpu_device: &device,
+                wgpu_queue: &queue,
+                window: &window,
+                imgui_renderer: &mut imgui_renderer,
+                winit_platform: &mut platform,
+                imgui: &mut imgui,
+                command_encoder: None,
+                color_attachment_view: None,
+            },
+        );
     }
 
     event_loop.run(move |event, _, control_flow| {
@@ -140,14 +152,16 @@ fn main() {
                 });
 
                 game.render(
-                    &device,
-                    &queue,
-                    &window,
-                    &mut imgui_renderer,
-                    &mut platform,
-                    &mut imgui,
-                    &mut command_encoder,
-                    &view,
+                    &mut game::RendererState {
+                        wgpu_device: &device,
+                        wgpu_queue: &queue,
+                        window: &window,
+                        imgui_renderer: &mut imgui_renderer,
+                        winit_platform: &mut platform,
+                        imgui: &mut imgui,
+                        command_encoder: Some(&mut command_encoder),
+                        color_attachment_view: Some(&view),
+                    },
                 );
 
                 queue.submit(std::iter::once(command_encoder.finish()));
@@ -163,6 +177,17 @@ fn main() {
             _ => {}
         }
 
-        game.post_process_event(event, &window, &mut platform, &mut imgui);
+        game.post_process_event(event,
+            &mut game::RendererState {
+                wgpu_device: &device,
+                wgpu_queue: &queue,
+                window: &window,
+                imgui_renderer: &mut imgui_renderer,
+                winit_platform: &mut platform,
+                imgui: &mut imgui,
+                command_encoder: None,
+                color_attachment_view: None,
+            },
+        );
     });
 }
