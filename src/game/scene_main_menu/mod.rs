@@ -1,4 +1,4 @@
-use super::{RendererState, RendererOutputState};
+use super::{RendererState, RendererOutputState, GameState};
 
 pub struct SceneMainMenu {
     demo_open: bool,
@@ -19,7 +19,7 @@ impl SceneMainMenu {
         self: &mut Self,
         renderer_state: &mut RendererState,
         output_state: &mut RendererOutputState,
-        go_play: &mut dyn FnMut(),
+        game_state: &mut GameState,
     ) -> &Self {
 
         let now = std::time::Instant::now();
@@ -35,8 +35,6 @@ impl SceneMainMenu {
 
         let window1 = ui.window("Hello world");
 
-        let mut should_go_play = false;
-
         window1
             .size([300.0, 100.0], imgui::Condition::FirstUseEver)
             .build(|| {
@@ -45,7 +43,7 @@ impl SceneMainMenu {
                 ui.separator();
 
                 if ui.button("PLAY!") {
-                    should_go_play = true;
+                    game_state.go_to_gameplay();
                 }
 
                 ui.separator();
@@ -93,10 +91,6 @@ impl SceneMainMenu {
         renderer_state.imgui_renderer
             .render(renderer_state.imgui.render(), &renderer_state.wgpu_queue, &renderer_state.wgpu_device, &mut gui_render_pass)
             .expect("Rendering failed");
-
-        if should_go_play {
-            go_play();
-        }
 
         self
     }

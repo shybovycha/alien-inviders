@@ -1,6 +1,6 @@
 use wgpu::util::DeviceExt;
 
-use super::{RendererState, RendererOutputState};
+use super::{RendererState, RendererOutputState, GameState};
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
@@ -127,7 +127,7 @@ impl SceneGameplay {
         self: &Self,
         renderer_state: &mut RendererState,
         output_state: &mut RendererOutputState,
-        go_to_main_menu: &mut dyn FnMut(),
+        game_state: &mut GameState,
     ) -> &Self {
 
         let mut render_pass = output_state.command_encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
@@ -169,7 +169,8 @@ impl SceneGameplay {
         &mut self,
         event: winit::event::Event<T>,
         renderer_state: &mut RendererState,
-        go_to_main_menu: &mut dyn FnMut()) -> &Self {
+        game_state: &mut GameState,
+    ) -> &Self {
 
         match event {
             winit::event::Event::WindowEvent {
@@ -183,7 +184,7 @@ impl SceneGameplay {
                 },
                 ..
             } => {
-                go_to_main_menu();
+                game_state.go_to_main_menu();
             },
 
             _ => (),

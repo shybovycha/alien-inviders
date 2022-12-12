@@ -100,21 +100,8 @@ fn main() {
         },
     );
 
-    {
-        // TODO: temporary
-        game.set_scene_state(
-            game::SceneState::MainMenu,
-            &mut game::RendererState {
-                wgpu_device: &device,
-                wgpu_queue: &queue,
-                window: &window,
-                surface_config: &surface_config,
-                imgui_renderer: &mut imgui_renderer,
-                winit_platform: &mut platform,
-                imgui: &mut imgui,
-            },
-        );
-    }
+    // TODO: add loading
+    game.state.go_to_main_menu();
 
     event_loop.run(move |event, _, control_flow| {
         match event {

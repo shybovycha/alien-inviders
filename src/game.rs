@@ -5,11 +5,36 @@ pub mod scene_new_game_intro;
 pub mod scene_gameplay;
 
 #[derive(Clone, Copy, PartialEq)]
-pub enum SceneState {
+pub enum Scene {
     Loading,
     MainMenu,
     NewGame,
     Gameplay,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub struct GameState {
+    current_scene: Scene,
+}
+
+impl GameState {
+    pub fn new() -> Self {
+        Self {
+            current_scene: Scene::MainMenu,
+        }
+    }
+
+    pub fn go_to_main_menu(&mut self) -> &mut Self {
+        self.current_scene = Scene::MainMenu;
+
+        self
+    }
+
+    pub fn go_to_gameplay(&mut self) -> &mut Self {
+        self.current_scene = Scene::Gameplay;
+
+        self
+    }
 }
 
 pub struct RendererState<'a> {
@@ -28,7 +53,9 @@ pub struct RendererOutputState<'a> {
 }
 
 pub struct Game {
-    current_state: SceneState,
+    pub state: GameState,
+
+    previous_state: GameState,
 
     scene_gameplay: scene_gameplay::SceneGameplay,
     scene_main_menu: scene_main_menu::SceneMainMenu,
@@ -37,7 +64,8 @@ pub struct Game {
 impl Game {
     pub fn new(renderer_state: &mut RendererState) -> Self {
         Self {
-            current_state: SceneState::Loading,
+            state: GameState::new(),
+            previous_state: GameState::new(),
 
             scene_gameplay: scene_gameplay::SceneGameplay::new(renderer_state),
             scene_main_menu: scene_main_menu::SceneMainMenu::new(),
@@ -45,12 +73,12 @@ impl Game {
     }
 
     fn before_scene_switched(self: &mut Self, renderer_state: &mut RendererState) -> &mut Self {
-        match self.current_state {
-            SceneState::Gameplay => {
+        match self.previous_state.current_scene {
+            Scene::Gameplay => {
                 self.scene_gameplay.on_leave_scene(renderer_state);
             },
 
-            SceneState::MainMenu => {
+            Scene::MainMenu => {
                 self.scene_main_menu.on_leave_scene(renderer_state);
             },
 
@@ -61,12 +89,12 @@ impl Game {
     }
 
     fn after_scene_switched(self: &mut Self, renderer_state: &mut RendererState) -> &mut Self {
-        match self.current_state {
-            SceneState::Gameplay => {
+        match self.state.current_scene {
+            Scene::Gameplay => {
                 self.scene_gameplay.on_enter_scene(renderer_state);
             },
 
-            SceneState::MainMenu => {
+            Scene::MainMenu => {
                 self.scene_main_menu.on_enter_scene(renderer_state);
             },
 
@@ -76,11 +104,15 @@ impl Game {
         self
     }
 
-    pub fn set_scene_state(self: &mut Self, new_state: SceneState, renderer_state: &mut RendererState) -> &mut Self {
+    fn update_scene(self: &mut Self, renderer_state: &mut RendererState) -> &mut Self {
+        if self.previous_state == self.state {
+            return self
+        }
+
         // before switching the scene
         self.before_scene_switched(renderer_state);
 
-        self.current_state = new_state;
+        self.previous_state = self.state;
 
         // after switching the scene
         self.after_scene_switched(renderer_state);
@@ -89,57 +121,44 @@ impl Game {
     }
 
     pub fn render(self: &mut Self, renderer_state: &mut RendererState, output_state: &mut RendererOutputState) -> &Self {
-        let mut next_state = self.current_state;
-
-        match self.current_state {
-            SceneState::Gameplay => {
+        match self.state.current_scene {
+            Scene::Gameplay => {
                 self.scene_gameplay.render(
                     renderer_state,
                     output_state,
-                    &mut || { next_state = SceneState::MainMenu },
+                    &mut self.state,
                 );
             },
 
-            SceneState::MainMenu => {
+            Scene::MainMenu => {
                 self.scene_main_menu.render(
                     renderer_state,
                     output_state,
-                    &mut || { next_state = SceneState::Gameplay; }
+                    &mut self.state,
                 );
             },
 
             _ => (),
-        }
-
-        if next_state != self.current_state {
-            self.set_scene_state(next_state, renderer_state);
         }
 
         self
     }
 
-    pub fn post_process_event<T>(
-        &mut self,
-        event: winit::event::Event<T>,
-        renderer_state: &mut RendererState) -> &Self {
+    pub fn post_process_event<T>(&mut self, event: winit::event::Event<T>, renderer_state: &mut RendererState) -> &Self {
 
-        let mut next_state = self.current_state;
-
-        match self.current_state {
-            SceneState::MainMenu => {
+        match self.state.current_scene {
+            Scene::MainMenu => {
                 self.scene_main_menu.post_process_event(event, renderer_state);
             },
 
-            SceneState::Gameplay => {
-                self.scene_gameplay.post_process_event(event, renderer_state, &mut || { next_state = SceneState::MainMenu });
+            Scene::Gameplay => {
+                self.scene_gameplay.post_process_event(event, renderer_state, &mut self.state);
             },
 
             _ => (),
         }
 
-        if next_state != self.current_state {
-            self.set_scene_state(next_state, renderer_state);
-        }
+        self.update_scene(renderer_state);
 
         self
     }
