@@ -31,13 +31,17 @@ impl SceneMainMenu {
 
         let ui = renderer_state.imgui.frame();
 
-        let window1 = ui.window("Hello world");
+        let window1 = ui.window("Alien Inviders");
 
         window1
-            .size([300.0, 100.0], imgui::Condition::FirstUseEver)
+            .position([15.0, 15.0], imgui::Condition::FirstUseEver)
+            .size([980.0, 365.0], imgui::Condition::FirstUseEver)
             .build(|| {
-                ui.text("Hello world!");
-                ui.text("This...is...imgui-rs on WGPU!");
+                ui.text("<plot placeholder>");
+
+                let size = ui.window_size();
+                ui.text(format!("window size: {} x {}", size[0], size[1]));
+
                 ui.separator();
 
                 if ui.button("PLAY!") {
@@ -50,15 +54,6 @@ impl SceneMainMenu {
                     "Mouse Position: ({:.1},{:.1})",
                     mouse_pos[0], mouse_pos[1]
                 ));
-            });
-
-        let window2 = ui.window("Hello too");
-
-        window2
-            .size([400.0, 200.0], imgui::Condition::FirstUseEver)
-            .position([400.0, 200.0], imgui::Condition::FirstUseEver)
-            .build(|| {
-                ui.text(format!("Frametime: {:?}", delta_s));
             });
 
         if self.last_cursor != ui.mouse_cursor() {
