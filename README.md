@@ -2,19 +2,15 @@
 
 ## Foreword
 
-This was my first game i ever created using my programming skills.
-This is a space simulator. There is still no idea or story for the 
-game yet as the first version was created when i was just a kid.
+This was my first game I ever created using my programming skills.
+This is a space simulator. There is still no idea or story for the
+game yet as the first version was created when I was just a kid.
 So, do not be very strict while observing these games, please.
 
-## Developer notes
+## Notes
 
-Each version of the game is contained in its own branch.
-Some versions (written in [*DarkBasic*](https://github.com/TheGameCreators/Dark-Basic-Pro)) are not syncronizing with the 
-FPS so they look horrible. Others (written in [*BlitzBasic*](https://github.com/blitz-research/blitz3d)) do
-have the syncing so they look a bit more pretty.
+Each version of the game is contained in its own branch:
 
-Now i am thinking on the new version of that old stuff. So, you
-may be faced a new branch soon - it may be a great challenge for the ones
-in the repository right now. Who knows, maybe it shall become a **1.0** version
-of the game one day...
+* [`old-2`](https://github.com/shybovycha/alien-inviders/tree/old-2) and [`old-3`](https://github.com/shybovycha/alien-inviders/tree/old-3) are made in [*DarkBasic*](https://github.com/TheGameCreators/Dark-Basic-Pro) and lack frame & CPU clock syncronization, so they look horrible; the [demo is available on YouTube](https://youtu.be/3WihQBqXRGE)
+* [`old-4`](https://github.com/shybovycha/alien-inviders/tree/old-4) is made in [*BlitzBasic*](https://github.com/blitz-research/blitz3d), it has the syncing; watch the [demo on YouTube](https://youtu.be/ihvSbonJZfY)
+* [`rework-2022`](https://github.com/shybovycha/alien-inviders/tree/rework-2022) is currently a work-in-progress version and is made in Rust with [WGPU](https://github.com/gfx-rs/wgpu/)
