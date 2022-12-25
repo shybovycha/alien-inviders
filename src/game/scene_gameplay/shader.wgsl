@@ -1,22 +1,22 @@
-const PI: f32 = 3.14159265359;
-const PI2: f32 = 6.28318530718;
+let PI: f32 = 3.14159265359;
+let PI2: f32 = 6.28318530718;
 
 struct Light {
-    direction: vec3<f32>;
-    color: vec3<f32>;
+    direction: vec3<f32>,
+    color: vec3<f32>,
 };
 
 struct Material {
-    albedo: vec3<f32>;
-    metallic: f32;
-    roughness: f32;
-    emissive: vec3<f32>;
+    albedo: vec3<f32>,
+    metallic: f32,
+    roughness: f32,
+    emissive: vec3<f32>,
 };
 
 struct Surface {
-    position: vec3<f32>;
-    normal: vec3<f32>;
-    uv: vec2<f32>;
+    position: vec3<f32>,
+    normal: vec3<f32>,
+    uv: vec2<f32>,
 };
 
 fn fresnel_schlick(specularColor: vec3<f32>, dotNV: f32) -> vec3<f32> {
@@ -61,7 +61,7 @@ fn calculate_lighting(surface: Surface, material: Material, light: Light) -> vec
 
 struct LightsUniform
 {
-    lights: array<Light>;
+    lights: array<Light>,
 };
 
 struct CameraUniform {
@@ -71,8 +71,8 @@ struct CameraUniform {
 
 struct VertexInput {
     @location(0) position: vec3<f32>,
-    @location(1) normal: vec3<f32>,
-    @location(2) uv: vec2<f32>,
+    // @location(1) normal: vec3<f32>,
+    // @location(2) uv: vec2<f32>,
 };
 
 struct VertexOutput {
@@ -81,11 +81,11 @@ struct VertexOutput {
     @location(1) normal: vec3<f32>,
 };
 
-@group(0) @binding(0) var<storage, read> lights: LightsUniform;
+// @group(0) @binding(0) var<storage, read> lights: LightsUniform;
 
-@group(0) @binding(1) var<uniform> camera: CameraUniform;
+// @group(0) @binding(1) var<uniform> camera: CameraUniform;
 
-@group(1) @binding(0) var albedo_texture: texture_2d<f32>;
+/*@group(1) @binding(0) var albedo_texture: texture_2d<f32>;
 @group(1) @binding(1) var albedo_sampler: sampler;
 
 @group(1) @binding(2) var metallic_texture: texture_2d<f32>;
@@ -95,7 +95,7 @@ struct VertexOutput {
 @group(1) @binding(5) var roughness_sampler: sampler;
 
 @group(1) @binding(6) var emissive_texture: texture_2d<f32>;
-@group(1) @binding(7) var emissive_sampler: sampler;
+@group(1) @binding(7) var emissive_sampler: sampler;*/
 
 @vertex
 fn vs_main(
@@ -103,25 +103,28 @@ fn vs_main(
 ) -> VertexOutput {
     var out: VertexOutput;
 
-    out.clip_position = camera.projection * camera.view * vec4<f32>(vs_in.position, 1.0);
-    out.uv = vs_in.uv;
-    out.normal = vs_in.normal;
+    // out.clip_position = camera.projection * camera.view * vec4<f32>(vs_in.position, 1.0);
+    // out.uv = vs_in.uv;
+    // out.normal = vs_in.normal;
+
+    out.clip_position = vec4<f32>(vs_in.position, 1.0);
 
     return out;
 }
 
 @fragment
 fn fs_main(fs_in: VertexOutput) -> @location(0) vec4<f32> {
-    var surface = Surface(vs_in.position, vs_in.normal, vs_in.uv);
+    /*
+    var surface = Surface(fs_in.clip_position, fs_in.normal, fs_in.uv);
 
     var albedo_color = textureSample(albedo_texture, albedo_sampler, fs_in.uv);
     var roughness_color = textureSample(roughness_texture, roughness_sampler, fs_in.uv);
     var metallic_color = textureSample(metallic_texture, metallic_sampler, fs_in.uv);
     var emissive_color = textureSample(emissive_texture, emissive_sampler, fs_in.uv);
 
-    var material = Material(albedo_color, metallic_color.r, roughness_color.r, emissive_volor);
+    var material = Material(albedo_color, metallic_color.r, roughness_color.r, emissive_color);
 
-    var final_color = textureSample(texture_diffuse, sampler_diffuse, fs_in.uv);
+    var final_color = albedo_color;
 
     var color = albedo_color;
     var n_lights = arrayLength(lights);
@@ -132,6 +135,9 @@ fn fs_main(fs_in: VertexOutput) -> @location(0) vec4<f32> {
 
         color += weight * calculate_lighting(surface, material, light);
     }
+    */
 
-    return vec4<f32>(color, 1.0);
+    var color = fs_in.clip_position;
+
+    return color;
 }

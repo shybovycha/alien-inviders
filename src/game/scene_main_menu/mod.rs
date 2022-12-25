@@ -1,7 +1,6 @@
 use super::{RendererState, RendererOutputState, GameState};
 
 pub struct SceneMainMenu {
-    demo_open: bool,
     last_frame_timestamp: std::time::Instant,
     last_cursor: Option<imgui::MouseCursor>,
 }
@@ -9,7 +8,6 @@ pub struct SceneMainMenu {
 impl SceneMainMenu {
     pub fn new() -> Self {
         Self {
-            demo_open: true,
             last_frame_timestamp: std::time::Instant::now(),
             last_cursor: None,
         }
@@ -62,8 +60,6 @@ impl SceneMainMenu {
             .build(|| {
                 ui.text(format!("Frametime: {:?}", delta_s));
             });
-
-        ui.show_demo_window(&mut self.demo_open);
 
         if self.last_cursor != ui.mouse_cursor() {
             self.last_cursor = ui.mouse_cursor();
